@@ -63,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         if (id == R.id.about_author) {
 
             //TODO Dialog jakiś
+            //Test GIT
 
             return true;
         }
