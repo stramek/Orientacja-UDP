@@ -11,5 +11,10 @@
     <string name="Z">Z:</string>
     <string name="placeholder">(...)</string>
 
+    <string name="magnetometer">Magnetometr:</string>
+    <string name="A">A:</string>
+    <string name="B">B:</string>
+    <string name="C">C:</string>
+
 </resources>
 
