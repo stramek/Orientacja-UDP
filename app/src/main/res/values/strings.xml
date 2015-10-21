@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Orientacja UDP</string>
+    <string name="author">O autorze</string>
+    <string name="connecting">Łączenie&#8230;</string>
+    <string name="status">Status:</string>
+    <string name="disconnected">rozłączony</string>
+    <string name="connected">połączony</string>
+    <string name="accelerometer">Akcelerometr:</string>
+    <string name="X">X:</string>
+    <string name="Y">Y:</string>
+    <string name="Z">Z:</string>
+    <string name="placeholder">(...)</string>
+
+</resources>
+
