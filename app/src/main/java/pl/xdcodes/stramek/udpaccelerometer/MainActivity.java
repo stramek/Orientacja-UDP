@@ -19,6 +19,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private static final String TAG = MainActivity.class.getName();
 
     private SensorManager senSensorManager;
+
     private Sensor senAccelerometer;
     private Sensor senMagnetometer;
 
@@ -41,15 +42,19 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         Context context = getApplicationContext();
         senSensorManager = (SensorManager) getSystemService(context.SENSOR_SERVICE);
+
         senAccelerometer = senSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         senMagnetometer = senSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+
         senSensorManager.registerListener(this, senAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
         senSensorManager.registerListener(this, senMagnetometer, SensorManager.SENSOR_DELAY_NORMAL);
 
         fab = (FloatingActionButton) findViewById(R.id.fab);
+
         accelerometerX = (TextView) findViewById(R.id.accelerometerX);
         accelerometerY = (TextView) findViewById(R.id.accelerometerY);
         accelerometerZ = (TextView) findViewById(R.id.accelerometerZ);
+
         magnetometerA = (TextView) findViewById(R.id.magnetometerA);
         magnetometerB = (TextView) findViewById(R.id.magnetometerB);
         magnetometerC = (TextView) findViewById(R.id.magnetometerC);
@@ -105,19 +110,26 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             if ((curTime - lastUpdate) > 100) {
                 lastUpdate = curTime;
 
-                accelerometerX.setText(String.valueOf(Math.round(accelerometer[0] * 100.0) / 100.0));
-                accelerometerY.setText(String.valueOf(Math.round(accelerometer[1] * 100.0) / 100.0));
-                accelerometerZ.setText(String.valueOf(Math.round(accelerometer[2] * 100.0) / 100.0));
+                accelerometerX.setText(round(accelerometer[0], 2));
+                accelerometerY.setText(round(accelerometer[1], 2));
+                accelerometerZ.setText(round(accelerometer[2], 2));
             }
         }
 
         if (mySensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
             float[] magnetometer = event.values;
 
-                magnetometerA.setText(String.valueOf(Math.round(magnetometer[0] * 100.0) / 100.0));
-                magnetometerB.setText(String.valueOf(Math.round(magnetometer[1] * 100.0) / 100.0));
-                magnetometerC.setText(String.valueOf(Math.round(magnetometer[2] * 100.0) / 100.0));
+            magnetometerA.setText(round(magnetometer[0], 2));
+            magnetometerB.setText(round(magnetometer[1], 2));
+            magnetometerC.setText(round(magnetometer[2], 2));
         }
+    }
+
+    private static String round(float value, int digits) {
+        float pom = 1;
+        assert digits >= 1;
+        for (int i = 0; i < digits; i++) pom *= 10;
+        return String.valueOf((Math.round(value * pom)) / pom);
     }
 
     @Override

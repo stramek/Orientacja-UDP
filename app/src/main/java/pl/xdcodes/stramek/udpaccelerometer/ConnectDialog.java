@@ -12,9 +12,9 @@ import android.widget.EditText;
 public class ConnectDialog extends DialogFragment {
 
     private static final String TAG = MainActivity.class.getName();
+
     private EditText address;
     private EditText port;
-
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -34,9 +34,9 @@ public class ConnectDialog extends DialogFragment {
                 })
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+                        //TODO połączenie
                     }
                 });
         return builder.create();
     }
-
 }
