@@ -75,7 +75,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         if (id == R.id.about_author) {
 
             //TODO Dialog jakiś
-            //Test GIT
 
             return true;
         }
@@ -115,14 +114,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         if (mySensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
             float[] magnetometer = event.values;
 
-            //Long curTime = System.currentTimeMillis();
-            //if ((curTime - lastUpdate) > 100) {
-              //  lastUpdate = curTime;
-
                 magnetometerA.setText(String.valueOf(Math.round(magnetometer[0] * 100.0) / 100.0));
                 magnetometerB.setText(String.valueOf(Math.round(magnetometer[1] * 100.0) / 100.0));
                 magnetometerC.setText(String.valueOf(Math.round(magnetometer[2] * 100.0) / 100.0));
-           // }
         }
     }
 

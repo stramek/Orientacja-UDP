@@ -24,15 +24,15 @@ public class ConnectDialog extends DialogFragment {
         address = (EditText) connectView.findViewById(R.id.address);
         port = (EditText) connectView.findViewById(R.id.port);
 
-        builder.setTitle("Ustawienia połączenia");
+        builder.setTitle(getString(R.string.connect_settings));
         builder.setView(connectView);
-        builder
-                .setPositiveButton("Połącz", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(getString(R.string.connect), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+
                         Log.d(TAG, "Adres: " + address.getText().toString() + " Port: " + port.getText().toString());
                     }
                 })
-                .setNegativeButton("Anuluj", new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                     }
                 });
