@@ -4,25 +4,31 @@
 
     <string name="status">Status:</string>
     <string name="disconnected">rozłączony</string>
-    <string name="connected">połączony</string>
     <string name="connecting">łączenie&#8230;</string>
+    <string name="sending">wysyłanie&#8230;</string>
 
-    <string name="placeholder">(...)</string>
+    <string name="placeholder">(&#8230;)</string>
 
     <string name="magnetometer">Magnetometr:</string>
-    <string name="A">A:</string>
-    <string name="B">B:</string>
-    <string name="C">C:</string>
-
     <string name="accelerometer">Akcelerometr:</string>
+    <string name="gyroscope">Żyroskop:</string>
+
     <string name="X">X:</string>
     <string name="Y">Y:</string>
     <string name="Z">Z:</string>
+
+    <string name="default_ip">192.168.0.100</string>
+    <string name="default_port">9876</string>
 
     <string name="connect_settings">Ustawienia połączenia</string>
     <string name="connect">Połącz</string>
     <string name="address">Adres</string>
     <string name="port">Port</string>
     <string name="cancel">Anluluj</string>
+    <string name="ok">Ok</string>
+
+    <string name="author_description">Autor: Marcin Stramowski\n\nProjekt inżynierski\n\n
+        Temat: Sterowanie on-line obiektem wirtualnym w przestrzeni 3D z wykorzystaniem
+        sygnałów urządzenia mobilnego</string>
 </resources>
 

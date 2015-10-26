@@ -1,4 +1,4 @@
-package pl.xdcodes.stramek.udpaccelerometer;
+package pl.xdcodes.stramek.orientacjaudp;
 
 import android.content.Context;
 import android.hardware.Sensor;
@@ -14,24 +14,35 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import pl.xdcodes.stramek.udpaccelerometer.R;
+
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
 
     private static final String TAG = MainActivity.class.getName();
 
     private SensorManager senSensorManager;
 
-    private Sensor senAccelerometer;
-    private Sensor senMagnetometer;
+    private Sensor sAccelerometer;
+    private Sensor sMagnetometer;
+    private Sensor sGyroscope;
+
+    protected static TextView status;
 
     private TextView accelerometerX;
     private TextView accelerometerY;
     private TextView accelerometerZ;
-    private TextView magnetometerA;
-    private TextView magnetometerB;
-    private TextView magnetometerC;
+
+    private TextView magnetometerX;
+    private TextView magnetometerY;
+    private TextView magnetometerZ;
+
+    private TextView gyroscopeX;
+    private TextView gyroscopeY;
+    private TextView gyroscopeZ;
+
+    protected static float[] values = new float[9];
 
     private FloatingActionButton fab;
-    private long lastUpdate = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,11 +54,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         Context context = getApplicationContext();
         senSensorManager = (SensorManager) getSystemService(context.SENSOR_SERVICE);
 
-        senAccelerometer = senSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        senMagnetometer = senSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+        sAccelerometer = senSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        sMagnetometer = senSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+        sGyroscope = senSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
 
-        senSensorManager.registerListener(this, senAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
-        senSensorManager.registerListener(this, senMagnetometer, SensorManager.SENSOR_DELAY_NORMAL);
+        senSensorManager.registerListener(this, sAccelerometer, SensorManager.SENSOR_DELAY_GAME);
+        senSensorManager.registerListener(this, sMagnetometer, SensorManager.SENSOR_DELAY_GAME);
+        senSensorManager.registerListener(this, sGyroscope, SensorManager.SENSOR_DELAY_GAME);
 
         fab = (FloatingActionButton) findViewById(R.id.fab);
 
@@ -55,9 +68,15 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         accelerometerY = (TextView) findViewById(R.id.accelerometerY);
         accelerometerZ = (TextView) findViewById(R.id.accelerometerZ);
 
-        magnetometerA = (TextView) findViewById(R.id.magnetometerA);
-        magnetometerB = (TextView) findViewById(R.id.magnetometerB);
-        magnetometerC = (TextView) findViewById(R.id.magnetometerC);
+        magnetometerX = (TextView) findViewById(R.id.magnetometerX);
+        magnetometerY = (TextView) findViewById(R.id.magnetometerY);
+        magnetometerZ = (TextView) findViewById(R.id.magnetometerZ);
+
+        gyroscopeX = (TextView) findViewById(R.id.gyroscopeX);
+        gyroscopeY = (TextView) findViewById(R.id.gyroscopeY);
+        gyroscopeZ = (TextView) findViewById(R.id.gyroscopeZ);
+
+        status = (TextView) findViewById(R.id.status);
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,7 +98,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         int id = item.getItemId();
         if (id == R.id.about_author) {
 
-            //TODO Dialog jakiś
+            AboutDialog dialog = new AboutDialog();
+            dialog.show(getSupportFragmentManager(), null);
 
             return true;
         }
@@ -95,33 +115,50 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     protected void onResume() {
         super.onResume();
-        senSensorManager.registerListener(this, senAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
-        senSensorManager.registerListener(this, senMagnetometer, SensorManager.SENSOR_DELAY_NORMAL);
+        senSensorManager.registerListener(this, sAccelerometer, SensorManager.SENSOR_DELAY_GAME);
+        senSensorManager.registerListener(this, sMagnetometer, SensorManager.SENSOR_DELAY_GAME);
+        senSensorManager.registerListener(this, sGyroscope, SensorManager.SENSOR_DELAY_GAME);
     }
 
     @Override
     public void onSensorChanged(SensorEvent event) {
         Sensor mySensor = event.sensor;
 
+        if (event.accuracy == SensorManager.SENSOR_STATUS_UNRELIABLE) {
+            return;
+        }
+
         if (mySensor.getType() == Sensor.TYPE_ACCELEROMETER) {
             float[] accelerometer = event.values;
 
-            Long curTime = System.currentTimeMillis();
-            if ((curTime - lastUpdate) > 100) {
-                lastUpdate = curTime;
+            for (int i = 0; i < 3; i++)
+                values[i] = accelerometer[i];
 
-                accelerometerX.setText(round(accelerometer[0], 2));
-                accelerometerY.setText(round(accelerometer[1], 2));
-                accelerometerZ.setText(round(accelerometer[2], 2));
-            }
+            accelerometerX.setText(round(accelerometer[0], 2));
+            accelerometerY.setText(round(accelerometer[1], 2));
+            accelerometerZ.setText(round(accelerometer[2], 2));
         }
 
         if (mySensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
             float[] magnetometer = event.values;
 
-            magnetometerA.setText(round(magnetometer[0], 2));
-            magnetometerB.setText(round(magnetometer[1], 2));
-            magnetometerC.setText(round(magnetometer[2], 2));
+            for (int i = 0; i < 3; i++)
+                values[i + 3] = magnetometer[i];
+
+            magnetometerX.setText(round(magnetometer[0], 2));
+            magnetometerY.setText(round(magnetometer[1], 2));
+            magnetometerZ.setText(round(magnetometer[2], 2));
+        }
+
+        if (mySensor.getType() == Sensor.TYPE_GYROSCOPE) {
+            float[] gyroscope = event.values;
+
+            for (int i = 0; i < 3; i++)
+                values[i + 6] = gyroscope[i];
+
+            gyroscopeX.setText(round(gyroscope[0], 2));
+            gyroscopeY.setText(round(gyroscope[1], 2));
+            gyroscopeZ.setText(round(gyroscope[2], 2));
         }
     }
 
