@@ -27,6 +27,9 @@
     <string name="cancel">Anluluj</string>
     <string name="ok">Ok</string>
 
+    <string name="blank_address">Podaj adres</string>
+    <string name="blank_port">Podaj port</string>
+
     <string name="author_description">Autor: Marcin Stramowski\n\nProjekt inżynierski\n\n
         Temat: Sterowanie on-line obiektem wirtualnym w przestrzeni 3D z wykorzystaniem
         sygnałów urządzenia mobilnego</string>

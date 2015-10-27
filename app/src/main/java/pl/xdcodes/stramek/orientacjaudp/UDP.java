@@ -27,9 +27,10 @@ public class UDP {
             try {
                 byte[] b = FloatArray2ByteArray(MainActivity.values);
 
-                DatagramSocket s = new DatagramSocket();
                 InetAddress local = InetAddress.getByName(ip);
                 DatagramPacket p = new DatagramPacket(b, b.length, local, port);
+
+                DatagramSocket s = new DatagramSocket();
                 s.send(p);
             } catch (Exception e) {
                 e.printStackTrace();
