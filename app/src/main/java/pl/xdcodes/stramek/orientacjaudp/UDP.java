@@ -29,7 +29,6 @@ public class UDP {
 
                 DatagramSocket s = new DatagramSocket();
                 InetAddress local = InetAddress.getByName(ip);
-
                 DatagramPacket p = new DatagramPacket(b, b.length, local, port);
                 s.send(p);
             } catch (Exception e) {

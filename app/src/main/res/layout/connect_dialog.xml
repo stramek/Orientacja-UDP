@@ -15,6 +15,8 @@
             android:id="@+id/address"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:digits="0123456789."
+            android:inputType="number"
             android:hint="@string/address"/>
 
     </android.support.design.widget.TextInputLayout>
@@ -29,6 +31,7 @@
             android:id="@+id/port"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:inputType="number"
             android:hint="@string/port" />
 
     </android.support.design.widget.TextInputLayout>
