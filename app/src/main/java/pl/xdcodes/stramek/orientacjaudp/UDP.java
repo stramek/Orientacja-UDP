@@ -9,7 +9,7 @@ import java.nio.ByteBuffer;
 
 public class UDP {
 
-    private static final String TAG = MainActivity.class.getName();
+    private final String TAG = MainActivity.class.getName();
 
     String ip = "";
     int port = 0;
@@ -37,18 +37,9 @@ public class UDP {
             }
             return "Executed";
         }
-
-        @Override
-        protected void onPostExecute(String result) {}
-
-        @Override
-        protected void onPreExecute() {}
-
-        @Override
-        protected void onProgressUpdate(Void... values) {}
     }
 
-    public static byte[] FloatArray2ByteArray(float[] values) {
+    public byte[] FloatArray2ByteArray(float[] values) {
         ByteBuffer buffer = ByteBuffer.allocate(4 * values.length);
 
         for (float value : values) {

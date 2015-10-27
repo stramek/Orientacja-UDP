@@ -14,8 +14,8 @@ import pl.xdcodes.stramek.udpaccelerometer.R;
 
 public class ConnectDialog extends DialogFragment {
 
-    private static final String TAG = MainActivity.class.getName();
-    private static final int refreshRateInMs = 100;
+    private final String TAG = MainActivity.class.getName();
+    private final int refreshRateInMs = 100;
 
     private EditText address;
     private EditText port;
