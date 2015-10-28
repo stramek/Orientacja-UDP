@@ -12,7 +12,7 @@ import pl.xdcodes.stramek.udpaccelerometer.R;
 
 public class AboutDialog extends DialogFragment {
 
-    private static final String TAG = MainActivity.class.getName();
+    private final String TAG = MainActivity.class.getName();
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {

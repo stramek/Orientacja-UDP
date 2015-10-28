@@ -59,7 +59,7 @@
         <View
             android:id="@+id/main_shadow_1"
             android:layout_width="fill_parent"
-            android:layout_height="2dp"
+            android:layout_height="@dimen/shadow_height"
             android:layout_below="@+id/status_view"
             android:background="@color/main_shadow"
             android:layout_marginBottom="@dimen/view_padding"/>
@@ -155,7 +155,7 @@
     <View
         android:id="@+id/main_shadow_2"
         android:layout_width="fill_parent"
-        android:layout_height="2dp"
+        android:layout_height="@dimen/shadow_height"
         android:layout_below="@+id/accelerometer_view"
         android:background="@color/main_shadow"
         android:layout_marginBottom="@dimen/view_padding"/>
@@ -251,7 +251,7 @@
     <View
         android:id="@+id/main_shadow_3"
         android:layout_width="fill_parent"
-        android:layout_height="2dp"
+        android:layout_height="@dimen/shadow_height"
         android:layout_below="@+id/accelerometer_view"
         android:background="@color/main_shadow"
         android:layout_marginBottom="@dimen/view_padding"/>
@@ -347,7 +347,7 @@
             <View
                 android:id="@+id/main_shadow_4"
                 android:layout_width="fill_parent"
-                android:layout_height="2dp"
+                android:layout_height="@dimen/shadow_height"
                 android:layout_below="@+id/gyroscope_view"
                 android:background="@color/main_shadow"/>
         </LinearLayout>

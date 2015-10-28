@@ -11,8 +11,8 @@ public class UDP {
 
     private final String TAG = MainActivity.class.getName();
 
-    String ip = "";
-    int port = 0;
+    private String ip = "";
+    private int port = 0;
 
     UDP(String ip, int port) {
         this.ip = ip;

@@ -11,6 +11,8 @@
     <dimen name="inner_padding_Left">10dp</dimen>
     <dimen name="inner_padding_Right">10dp</dimen>
 
+    <dimen name="shadow_height">2dp</dimen>
+
     <dimen name="view_padding">10dp</dimen>
     <dimen name="sensor_left_padding">6dp</dimen>
     <dimen name="about_top_padding">20dp</dimen>
