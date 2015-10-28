@@ -63,11 +63,13 @@ public class ConnectDialog extends DialogFragment {
                 if (address.getText().length() == 0) {
                     addressIL.setErrorEnabled(true);
                     addressIL.setError(getString(R.string.blank_address));
+                    address.requestFocus();
                 }
 
                 if (port.getText().length() == 0) {
                     portIL.setErrorEnabled(true);
                     portIL.setError(getString(R.string.blank_port));
+                    port.requestFocus();
                 }
 
                 if (address.getText().length() > 0 && port.getText().length() > 0) {
