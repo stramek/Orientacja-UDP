@@ -12,7 +12,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.TextView;
+
+import java.util.ArrayList;
 
 import pl.xdcodes.stramek.udpaccelerometer.R;
 
@@ -118,6 +121,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         senSensorManager.registerListener(this, sAccelerometer, SensorManager.SENSOR_DELAY_GAME);
         senSensorManager.registerListener(this, sMagnetometer, SensorManager.SENSOR_DELAY_GAME);
         senSensorManager.registerListener(this, sGyroscope, SensorManager.SENSOR_DELAY_GAME);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        senSensorManager.unregisterListener(this);
     }
 
     @Override

@@ -7,8 +7,6 @@ import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.EditText;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import pl.xdcodes.stramek.udpaccelerometer.R;
 
@@ -16,7 +14,6 @@ import pl.xdcodes.stramek.udpaccelerometer.R;
 public class ConnectDialog extends DialogFragment {
 
     private final String TAG = MainActivity.class.getName();
-    private final int refreshRateInMs = 100;
 
     private EditText address;
     private EditText port;
@@ -74,14 +71,7 @@ public class ConnectDialog extends DialogFragment {
 
                 if (address.getText().length() > 0 && port.getText().length() > 0) {
                     MainActivity.status.setText(R.string.sending);
-                    Timer timer = new Timer();
-                    timer.schedule(new TimerTask() {
-                        @Override
-                        public void run() {
-                            new UDP(address.getText().toString(),
-                                    Integer.parseInt(port.getText().toString()));
-                        }
-                    }, 0, refreshRateInMs);
+                    new UDP(address.getText().toString(), Integer.parseInt(port.getText().toString()));
                     dialog.dismiss();
                 }
             }
