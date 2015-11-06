@@ -1,6 +1,7 @@
 package pl.xdcodes.stramek.orientacjaudp;
 
 import android.content.Context;
+import android.graphics.drawable.Icon;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -12,10 +13,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
+
 import android.widget.TextView;
 
-import java.util.ArrayList;
 
 import pl.xdcodes.stramek.udpaccelerometer.R;
 
@@ -43,9 +43,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private TextView gyroscopeY;
     private TextView gyroscopeZ;
 
+    private ConnectDialog dialog;
+
     protected static float[] values = new float[9];
 
     private FloatingActionButton fab;
+
+    protected static boolean sending = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        Context context = getApplicationContext();
+        final Context context = getApplicationContext();
         senSensorManager = (SensorManager) getSystemService(context.SENSOR_SERVICE);
 
         sAccelerometer = senSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -84,8 +88,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ConnectDialog dialog = new ConnectDialog();
-                dialog.show(getSupportFragmentManager(), null);
+                if(!sending) {
+                    dialog = new ConnectDialog();
+                    dialog.show(getSupportFragmentManager(), null);
+                } else {
+                    dialog.cancelSending();
+                    status.setText(getString(R.string.disconnected));
+                    sending = false;
+                }
             }
         });
     }

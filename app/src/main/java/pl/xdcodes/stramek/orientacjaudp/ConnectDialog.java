@@ -1,6 +1,8 @@
 package pl.xdcodes.stramek.orientacjaudp;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.DialogFragment;
@@ -21,6 +23,12 @@ public class ConnectDialog extends DialogFragment {
     private TextInputLayout addressIL;
     private TextInputLayout portIL;
 
+    private UDP udp;
+
+    public void cancelSending() {
+        udp.cancel(true);
+    }
+
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
@@ -34,8 +42,10 @@ public class ConnectDialog extends DialogFragment {
         addressIL = (TextInputLayout) connectView.findViewById(R.id.address_input_layout);
         portIL = (TextInputLayout) connectView.findViewById(R.id.port_input_layout);
 
-        address.setText(getString(R.string.default_ip));
-        port.setText(getString(R.string.default_port));
+        SharedPreferences prefs = getContext().getSharedPreferences("lastIpPort", Context.MODE_PRIVATE);
+
+        address.setText(prefs.getString("lastIp", getString(R.string.default_ip)));
+        port.setText(prefs.getString("lastPort", getString(R.string.default_port)));
 
         address.requestFocus();
 
@@ -71,7 +81,17 @@ public class ConnectDialog extends DialogFragment {
 
                 if (address.getText().length() > 0 && port.getText().length() > 0) {
                     MainActivity.status.setText(R.string.sending);
-                    new UDP(address.getText().toString(), Integer.parseInt(port.getText().toString()));
+                    MainActivity.sending = true;
+                    udp = new UDP(address.getText().toString(), Integer.parseInt(port.getText().toString()));
+                    udp.execute();
+
+                    SharedPreferences.Editor editor =  getContext().getSharedPreferences("lastIpPort", Context.MODE_PRIVATE).edit();
+                    editor.putString("lastIp", address.getText().toString());
+                    editor.putString("lastPort", port.getText().toString());
+                    editor.commit();
+
+
+
                     dialog.dismiss();
                 }
             }
