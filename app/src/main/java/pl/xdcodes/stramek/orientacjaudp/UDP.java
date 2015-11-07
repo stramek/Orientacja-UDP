@@ -27,7 +27,6 @@ public class UDP extends AsyncTask<String, Void, String> {
 
     @Override
     protected String doInBackground(String... params) {
-            ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
 
         try {
             local = InetAddress.getByName(ip);
