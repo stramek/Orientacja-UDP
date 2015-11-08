@@ -33,5 +33,8 @@
     <string name="author_description">Autor: Marcin Stramowski\n\nProjekt inżynierski\n\n
         Temat: Sterowanie on-line obiektem wirtualnym w przestrzeni 3D z wykorzystaniem
         sygnałów urządzenia mobilnego</string>
+    
+    <string name="wait_wifi">Poczekaj na połącznie z siecią.</string>
+    <string name="on_and_wait_wifi">Włączam WIFI...\nPoczekaj na połącznie z siecią</string>
 </resources>
 

@@ -1,6 +1,7 @@
 package pl.xdcodes.stramek.orientacjaudp;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -12,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 
 public class UDP extends AsyncTask<String, Void, String> {
 
-    private final String TAG = MainActivity.class.getName();
+    private final String TAG = UDP.class.getName();
 
     private String ip = "";
     private int port = 0;
@@ -40,6 +41,7 @@ public class UDP extends AsyncTask<String, Void, String> {
                 byte[] b = FloatArray2ByteArray(MainActivity.values);
                 DatagramPacket p = new DatagramPacket(b, b.length, local, port);
                 s.send(p);
+                Thread.sleep(33);
             } catch (Exception e) {
                 e.printStackTrace();
             }

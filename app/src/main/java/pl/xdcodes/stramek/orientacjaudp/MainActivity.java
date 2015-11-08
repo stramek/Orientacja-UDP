@@ -1,25 +1,30 @@
 package pl.xdcodes.stramek.orientacjaudp;
 
 import android.content.Context;
-import android.graphics.drawable.Icon;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-
 import android.widget.TextView;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 import pl.xdcodes.stramek.udpaccelerometer.R;
 
-public class MainActivity extends AppCompatActivity implements SensorEventListener {
+public class MainActivity extends AppCompatActivity implements SensorEventListener, ConnectDialog.StatusDialogListener {
 
     private final String TAG = MainActivity.class.getName();
 
@@ -29,7 +34,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private Sensor sMagnetometer;
     private Sensor sGyroscope;
 
-    protected static TextView status;
+    private TextView status;
 
     private TextView accelerometerX;
     private TextView accelerometerY;
@@ -49,11 +54,24 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     private FloatingActionButton fab;
 
-    protected static boolean sending = false;
+    private boolean sending = false;
+
+    @Override
+    public void onFinishDialog(boolean status) {
+        if(status) {
+            fab.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_not_interested_white_24dp));
+            this.status.setText(R.string.sending);
+            sending = true;
+        } else {
+            sending = false;
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -89,15 +107,46 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             @Override
             public void onClick(View view) {
                 if(!sending) {
-                    dialog = new ConnectDialog();
-                    dialog.show(getSupportFragmentManager(), null);
+                    boolean wifiShare = false;
+
+                    ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+                    NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+                    WifiManager wifi = (WifiManager)getSystemService(Context.WIFI_SERVICE);
+
+                    try {
+                        final Method method = wifi.getClass().getDeclaredMethod("isWifiApEnabled");
+                        method.setAccessible(true);
+                        wifiShare = (Boolean) method.invoke(wifi);
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    } catch (NoSuchMethodException e) {
+                        e.printStackTrace();
+                    } catch (InvocationTargetException e) {
+                        e.printStackTrace();
+                    }
+
+                    if (mWifi.isConnected() || wifiShare) {
+                        dialog = new ConnectDialog();
+                        dialog.show(getSupportFragmentManager(), null);
+                    } else if (wifi.isWifiEnabled()){
+                        Snackbar.make(view, getString(R.string.wait_wifi), Snackbar.LENGTH_SHORT).show();
+                    } else {
+                        wifi.setWifiEnabled(true);
+                        Snackbar.make(view, getString(R.string.on_and_wait_wifi), Snackbar.LENGTH_LONG).show();
+                    }
                 } else {
-                    dialog.cancelSending();
-                    status.setText(getString(R.string.disconnected));
+                    stopSending();
                     sending = false;
+                    fab.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_settings_ethernet_white_24dp));
                 }
             }
         });
+    }
+
+    private void stopSending() {
+        dialog.cancelSending();
+        status.setText(getString(R.string.disconnected));
+
     }
 
     @Override
@@ -122,30 +171,30 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     protected void onPause() {
         super.onPause();
-        senSensorManager.unregisterListener(this);
+        //senSensorManager.unregisterListener(this);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        senSensorManager.registerListener(this, sAccelerometer, SensorManager.SENSOR_DELAY_GAME);
-        senSensorManager.registerListener(this, sMagnetometer, SensorManager.SENSOR_DELAY_GAME);
-        senSensorManager.registerListener(this, sGyroscope, SensorManager.SENSOR_DELAY_GAME);
+        //senSensorManager.registerListener(this, sAccelerometer, SensorManager.SENSOR_DELAY_GAME);
+        //senSensorManager.registerListener(this, sMagnetometer, SensorManager.SENSOR_DELAY_GAME);
+        //senSensorManager.registerListener(this, sGyroscope, SensorManager.SENSOR_DELAY_GAME);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        senSensorManager.unregisterListener(this);
+        //senSensorManager.unregisterListener(this);
     }
 
     @Override
     public void onSensorChanged(SensorEvent event) {
         Sensor mySensor = event.sensor;
 
-        if (event.accuracy == SensorManager.SENSOR_STATUS_UNRELIABLE) {
-            return;
-        }
+        //if (event.accuracy == SensorManager.SENSOR_STATUS_UNRELIABLE) {
+        //    return;
+        //}
 
         if (mySensor.getType() == Sensor.TYPE_ACCELEROMETER) {
             float[] accelerometer = event.values;

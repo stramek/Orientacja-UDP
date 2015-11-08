@@ -15,7 +15,7 @@ import pl.xdcodes.stramek.udpaccelerometer.R;
 
 public class ConnectDialog extends DialogFragment {
 
-    private final String TAG = MainActivity.class.getName();
+    private final String TAG = ConnectDialog.class.getName();
 
     private EditText address;
     private EditText port;
@@ -26,7 +26,11 @@ public class ConnectDialog extends DialogFragment {
     private UDP udp;
 
     public void cancelSending() {
-        udp.cancel(true);
+        udp.cancel(false);
+    }
+
+    public interface StatusDialogListener {
+        void onFinishDialog(boolean status);
     }
 
     @Override
@@ -58,7 +62,8 @@ public class ConnectDialog extends DialogFragment {
                     }
         }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-
+                StatusDialogListener activity = (StatusDialogListener) getActivity();
+                activity.onFinishDialog(false);
             }
         });
 
@@ -80,8 +85,7 @@ public class ConnectDialog extends DialogFragment {
                 }
 
                 if (address.getText().length() > 0 && port.getText().length() > 0) {
-                    MainActivity.status.setText(R.string.sending);
-                    MainActivity.sending = true;
+
                     udp = new UDP(address.getText().toString(), Integer.parseInt(port.getText().toString()));
                     udp.execute();
 
@@ -90,7 +94,8 @@ public class ConnectDialog extends DialogFragment {
                     editor.putString("lastPort", port.getText().toString());
                     editor.commit();
 
-
+                    StatusDialogListener activity = (StatusDialogListener) getActivity();
+                    activity.onFinishDialog(true);
 
                     dialog.dismiss();
                 }
