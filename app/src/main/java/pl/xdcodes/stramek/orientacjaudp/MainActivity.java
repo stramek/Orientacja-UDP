@@ -9,6 +9,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
@@ -18,6 +19,7 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -56,12 +58,15 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     private boolean sending = false;
 
+    private PowerManager.WakeLock mWakeLock;
+
     @Override
     public void onFinishDialog(boolean status) {
         if(status) {
             fab.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_not_interested_white_24dp));
             this.status.setText(R.string.sending);
             sending = true;
+            preventFromSleep(true);
         } else {
             sending = false;
         }
@@ -71,6 +76,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+
+        PowerManager pm = (PowerManager) getSystemService (Context.POWER_SERVICE);
+        mWakeLock = pm.newWakeLock (PowerManager.SCREEN_DIM_WAKE_LOCK, "My Tag");
 
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -107,35 +115,17 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             @Override
             public void onClick(View view) {
                 if(!sending) {
-                    boolean wifiShare = false;
-
-                    ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-                    NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-                    WifiManager wifi = (WifiManager)getSystemService(Context.WIFI_SERVICE);
-
-                    try {
-                        final Method method = wifi.getClass().getDeclaredMethod("isWifiApEnabled");
-                        method.setAccessible(true);
-                        wifiShare = (Boolean) method.invoke(wifi);
-                    } catch (IllegalAccessException e) {
-                        e.printStackTrace();
-                    } catch (NoSuchMethodException e) {
-                        e.printStackTrace();
-                    } catch (InvocationTargetException e) {
-                        e.printStackTrace();
-                    }
-
-                    if (mWifi.isConnected() || wifiShare) {
+                    if (isWifiConnected() || isWifiSharing()) {
                         dialog = new ConnectDialog();
                         dialog.show(getSupportFragmentManager(), null);
-                    } else if (wifi.isWifiEnabled()){
+                    } else if (isWifiEnabled()){
                         Snackbar.make(view, getString(R.string.wait_wifi), Snackbar.LENGTH_SHORT).show();
                     } else {
-                        wifi.setWifiEnabled(true);
-                        Snackbar.make(view, getString(R.string.on_and_wait_wifi), Snackbar.LENGTH_LONG).show();
+                        setWifiEnabled(view);
                     }
                 } else {
                     stopSending();
+                    preventFromSleep(false);
                     sending = false;
                     fab.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_settings_ethernet_white_24dp));
                 }
@@ -143,10 +133,51 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         });
     }
 
+    private boolean isWifiConnected() {
+        ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        return mWifi.isConnected();
+    }
+
+    private void setWifiEnabled(View view) {
+        WifiManager wifi = (WifiManager)getSystemService(Context.WIFI_SERVICE);
+        wifi.setWifiEnabled(true);
+        Snackbar.make(view, getString(R.string.on_and_wait_wifi), Snackbar.LENGTH_LONG).show();
+    }
+
+    private boolean isWifiEnabled() {
+        WifiManager wifi = (WifiManager)getSystemService(Context.WIFI_SERVICE);
+        return wifi.isWifiEnabled();
+    }
+
+    private boolean isWifiSharing() {
+        WifiManager wifi = (WifiManager)getSystemService(Context.WIFI_SERVICE);
+
+        try {
+            final Method method = wifi.getClass().getDeclaredMethod("isWifiApEnabled");
+            method.setAccessible(true);
+            return (Boolean) method.invoke(wifi);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    private void preventFromSleep(boolean b) {
+        if (b) {
+            mWakeLock.acquire();
+        } else {
+            mWakeLock.release();
+        }
+    }
+
     private void stopSending() {
         dialog.cancelSending();
         status.setText(getString(R.string.disconnected));
-
     }
 
     @Override
@@ -171,30 +202,25 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     protected void onPause() {
         super.onPause();
-        //senSensorManager.unregisterListener(this);
+        senSensorManager.unregisterListener(this);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        //senSensorManager.registerListener(this, sAccelerometer, SensorManager.SENSOR_DELAY_GAME);
-        //senSensorManager.registerListener(this, sMagnetometer, SensorManager.SENSOR_DELAY_GAME);
-        //senSensorManager.registerListener(this, sGyroscope, SensorManager.SENSOR_DELAY_GAME);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        //senSensorManager.unregisterListener(this);
+        senSensorManager.registerListener(this, sAccelerometer, SensorManager.SENSOR_DELAY_GAME);
+        senSensorManager.registerListener(this, sMagnetometer, SensorManager.SENSOR_DELAY_GAME);
+        senSensorManager.registerListener(this, sGyroscope, SensorManager.SENSOR_DELAY_GAME);
     }
 
     @Override
     public void onSensorChanged(SensorEvent event) {
         Sensor mySensor = event.sensor;
 
-        //if (event.accuracy == SensorManager.SENSOR_STATUS_UNRELIABLE) {
-        //    return;
-        //}
+        /*if (event.accuracy == SensorManager.SENSOR_STATUS_UNRELIABLE) {
+            Toast.makeText(getApplicationContext(), "UNRELIABLE sensor!", Toast.LENGTH_SHORT).show();
+            return;
+        }*/
 
         if (mySensor.getType() == Sensor.TYPE_ACCELEROMETER) {
             float[] accelerometer = event.values;
