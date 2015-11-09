@@ -9,6 +9,7 @@ import java.net.InetAddress;
 import java.nio.ByteBuffer;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 public class UDP extends AsyncTask<String, Void, String> {
@@ -21,9 +22,17 @@ public class UDP extends AsyncTask<String, Void, String> {
     private InetAddress local;
     private DatagramSocket s;
 
+    //private double d = 0;
+
+    private ScheduledFuture result;
+
     UDP(String ip, int port) {
         this.ip = ip;
         this.port = port;
+    }
+
+    public void stopUDP() {
+        result.cancel(false);
     }
 
     @Override
@@ -36,7 +45,24 @@ public class UDP extends AsyncTask<String, Void, String> {
             e.printStackTrace();
         }
 
-        while(!isCancelled()) {
+        ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
+        result =  exec.scheduleAtFixedRate(new Runnable() {
+            @Override
+            public void run() {
+                //Log.d(TAG, "" + (System.currentTimeMillis() - d));
+                //d = System.currentTimeMillis();
+                try {
+                    byte[] b = FloatArray2ByteArray(MainActivity.values);
+                    DatagramPacket p = new DatagramPacket(b, b.length, local, port);
+                    s.send(p);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }, 0, 5, TimeUnit.MILLISECONDS);
+
+        /*while(!isCancelled()) {
+
             try {
                 byte[] b = FloatArray2ByteArray(MainActivity.values);
                 DatagramPacket p = new DatagramPacket(b, b.length, local, port);
@@ -45,7 +71,7 @@ public class UDP extends AsyncTask<String, Void, String> {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
+        }*/
 
         return "Executed";
     }

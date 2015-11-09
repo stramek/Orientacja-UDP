@@ -26,7 +26,8 @@ public class ConnectDialog extends DialogFragment {
     private UDP udp;
 
     public void cancelSending() {
-        udp.cancel(false);
+        udp.stopUDP();
+        //udp.cancel(false);
     }
 
     public interface StatusDialogListener {
