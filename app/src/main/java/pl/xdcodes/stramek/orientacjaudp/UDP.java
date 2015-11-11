@@ -62,7 +62,6 @@ public class UDP extends AsyncTask<String, Void, String> {
         }, 0, 33, TimeUnit.MILLISECONDS);
 
         /*while(!isCancelled()) {
-
             try {
                 byte[] b = FloatArray2ByteArray(MainActivity.values);
                 DatagramPacket p = new DatagramPacket(b, b.length, local, port);

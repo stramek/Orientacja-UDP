@@ -19,9 +19,6 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import pl.xdcodes.stramek.udpaccelerometer.R;
@@ -77,15 +74,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         super.onCreate(savedInstanceState);
 
-        PowerManager pm = (PowerManager) getSystemService (Context.POWER_SERVICE);
-        mWakeLock = pm.newWakeLock (PowerManager.SCREEN_DIM_WAKE_LOCK, "My Tag");
-
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        final Context context = getApplicationContext();
-        senSensorManager = (SensorManager) getSystemService(context.SENSOR_SERVICE);
+        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        mWakeLock = pm.newWakeLock (PowerManager.SCREEN_DIM_WAKE_LOCK, "My Tag");
+
+        senSensorManager = (SensorManager) getSystemService(getApplicationContext().SENSOR_SERVICE);
 
         sAccelerometer = senSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         sMagnetometer = senSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
@@ -157,13 +153,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             final Method method = wifi.getClass().getDeclaredMethod("isWifiApEnabled");
             method.setAccessible(true);
             return (Boolean) method.invoke(wifi);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
+
         return false;
     }
 
