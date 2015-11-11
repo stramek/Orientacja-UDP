@@ -202,7 +202,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     protected void onPause() {
         super.onPause();
-        senSensorManager.unregisterListener(this);
+        if (sending) {
+            stopSending();
+            preventFromSleep(false);
+            sending = false;
+            fab.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_settings_ethernet_white_24dp));
+            senSensorManager.unregisterListener(this);
+        }
     }
 
     @Override

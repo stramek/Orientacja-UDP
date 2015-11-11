@@ -59,7 +59,7 @@ public class UDP extends AsyncTask<String, Void, String> {
                     e.printStackTrace();
                 }
             }
-        }, 0, 5, TimeUnit.MILLISECONDS);
+        }, 0, 33, TimeUnit.MILLISECONDS);
 
         /*while(!isCancelled()) {
 
