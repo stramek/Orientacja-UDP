@@ -1,7 +1,6 @@
 package pl.xdcodes.stramek.orientacjaudp;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -59,7 +58,7 @@ public class UDP extends AsyncTask<String, Void, String> {
                     e.printStackTrace();
                 }
             }
-        }, 0, 33, TimeUnit.MILLISECONDS);
+        }, 0, 10, TimeUnit.MILLISECONDS);
 
         /*while(!isCancelled()) {
             try {
