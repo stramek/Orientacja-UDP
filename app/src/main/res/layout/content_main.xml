@@ -64,11 +64,59 @@
             android:background="@color/main_shadow"
             android:layout_marginBottom="@dimen/view_padding"/>
 
+        <RelativeLayout
+            android:id="@+id/algorithm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/inner_padding_Top"
+            android:paddingBottom="@dimen/inner_padding_Bottom"
+            android:paddingLeft="@dimen/inner_padding_Left"
+            android:paddingRight="@dimen/inner_padding_Right"
+            android:visibility="gone"
+            android:background="@color/main_inner">
+
+            <RadioGroup
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:theme="@style/default_text">
+
+                <RadioButton
+                    android:id="@+id/algorithm_raw_data"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="@string/algorithm_raw_data"/>
+
+                <RadioButton
+                    android:id="@+id/algorithm_accelerometer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/algorithm_accelerometer"/>
+
+                <RadioButton
+                    android:id="@+id/algorithm_complementary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/algorithm_complementary"/>
+
+            </RadioGroup>
+
+        </RelativeLayout>
+
+        <View
+            android:id="@+id/main_shadow_2"
+            android:visibility="gone"
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/shadow_height"
+            android:layout_below="@+id/algorithm"
+            android:background="@color/main_shadow"
+            android:layout_marginBottom="@dimen/view_padding"/>
+
     <RelativeLayout
         android:id="@+id/accelerometer_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/main_shadow_1"
+        android:layout_below="@id/main_shadow_2"
         android:background="@color/main_inner"
         android:paddingTop="@dimen/inner_padding_Top"
         android:paddingBottom="@dimen/inner_padding_Bottom"
@@ -153,7 +201,7 @@
     </RelativeLayout>
 
     <View
-        android:id="@+id/main_shadow_2"
+        android:id="@+id/main_shadow_3"
         android:layout_width="fill_parent"
         android:layout_height="@dimen/shadow_height"
         android:layout_below="@+id/accelerometer_view"
@@ -164,7 +212,7 @@
         android:id="@+id/magnetometer_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/main_shadow_2"
+        android:layout_below="@id/main_shadow_3"
         android:background="@color/main_inner"
         android:paddingTop="@dimen/inner_padding_Top"
         android:paddingBottom="@dimen/inner_padding_Bottom"
@@ -249,7 +297,7 @@
     </RelativeLayout>
 
     <View
-        android:id="@+id/main_shadow_3"
+        android:id="@+id/main_shadow_4"
         android:layout_width="fill_parent"
         android:layout_height="@dimen/shadow_height"
         android:layout_below="@+id/accelerometer_view"
@@ -260,7 +308,7 @@
         android:id="@+id/gyroscope_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/main_shadow_3"
+        android:layout_below="@id/main_shadow_4"
         android:background="@color/main_inner"
         android:paddingTop="@dimen/inner_padding_Top"
         android:paddingBottom="@dimen/inner_padding_Bottom"
@@ -345,7 +393,7 @@
     </RelativeLayout>
 
             <View
-                android:id="@+id/main_shadow_4"
+                android:id="@+id/main_shadow_5"
                 android:layout_width="fill_parent"
                 android:layout_height="@dimen/shadow_height"
                 android:layout_below="@+id/gyroscope_view"

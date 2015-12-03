@@ -18,6 +18,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.RadioButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.lang.reflect.Method;
@@ -50,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     private ConnectDialog dialog;
 
-    protected static float[] values = new float[9];
+    public static float[] values = new float[10];
 
     private FloatingActionButton fab;
 
@@ -58,11 +60,20 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     private PowerManager.WakeLock mWakeLock;
 
+    private RelativeLayout algorithm;
+    private View algorithmShadow;
+
+    public static RadioButton rawData;
+    public static RadioButton accelerometer;
+    public static RadioButton complementary;
+
     @Override
     public void onFinishDialog(boolean status) {
         if(status) {
             fab.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_not_interested_white_24dp));
             this.status.setText(R.string.sending);
+            algorithm.setVisibility(View.VISIBLE);
+            algorithmShadow.setVisibility(View.VISIBLE);
             sending = true;
             preventFromSleep(true);
         } else {
@@ -77,6 +88,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        algorithm = (RelativeLayout) findViewById(R.id.algorithm);
+        algorithmShadow = findViewById(R.id.main_shadow_2);
+        rawData = (RadioButton) findViewById(R.id.algorithm_raw_data);
+        accelerometer = (RadioButton) findViewById(R.id.algorithm_accelerometer);
+        complementary = (RadioButton) findViewById(R.id.algorithm_complementary);
+
         setSupportActionBar(toolbar);
 
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
@@ -172,6 +189,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private void stopSending() {
         dialog.cancelSending();
         status.setText(getString(R.string.disconnected));
+        algorithm.setVisibility(View.GONE);
+        algorithmShadow.setVisibility(View.GONE);
     }
 
     @Override

@@ -6,10 +6,14 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+
+import pl.xdcodes.stramek.orientacjaudp.algorithms.Accelerometer;
+import pl.xdcodes.stramek.orientacjaudp.algorithms.Complementary;
 
 public class UDP extends AsyncTask<String, Void, String> {
 
@@ -21,9 +25,19 @@ public class UDP extends AsyncTask<String, Void, String> {
     private InetAddress local;
     private DatagramSocket s;
 
-    //private double d = 0;
+    private double[] newRotation;
+
+    private float[] dataToSend = new float[10];
+
+    public static final int REFRESH_RATE = 20;
 
     private ScheduledFuture result;
+
+    private final int RAW_DATA = 1;
+    private final int ACCELEROMETER = 2;
+    private final int COMPLEMENTARY = 3;
+
+//    private double time = 0;
 
     UDP(String ip, int port) {
         this.ip = ip;
@@ -44,32 +58,56 @@ public class UDP extends AsyncTask<String, Void, String> {
             e.printStackTrace();
         }
 
+        newRotation = new double[9];
+        Arrays.fill(newRotation, 0);
+
         ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
         result =  exec.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
-                //Log.d(TAG, "" + (System.currentTimeMillis() - d));
-                //d = System.currentTimeMillis();
+
+                /*Log.d(TAG, "" + (System.currentTimeMillis() - time));
+                time = System.currentTimeMillis();*/
+
                 try {
-                    byte[] b = FloatArray2ByteArray(MainActivity.values);
-                    DatagramPacket p = new DatagramPacket(b, b.length, local, port);
-                    s.send(p);
+                    byte[] b;
+
+                    if(MainActivity.rawData.isChecked()) {
+                        dataToSend = Arrays.copyOf(MainActivity.values, 10);
+                        dataToSend[9] = RAW_DATA;
+                    }
+
+                    if(MainActivity.accelerometer.isChecked()) {
+                        Arrays.fill(dataToSend, 0.0f);
+                        Accelerometer aa = new Accelerometer(MainActivity.values);
+                        dataToSend[0] = (float) Math.toDegrees(aa.getRadian().getAlpha());
+                        dataToSend[1] = (float) Math.toDegrees(aa.getRadian().getBetta());
+                        dataToSend[9] = ACCELEROMETER;
+                    }
+
+                    if(MainActivity.complementary.isChecked()) {
+                        Arrays.fill(dataToSend, 0.0f);
+                        Complementary ca = new Complementary(MainActivity.values, newRotation);
+                        newRotation[0] = ca.getRadian().getAlpha();
+                        newRotation[1] = ca.getRadian().getBetta();
+                        newRotation[2] = ca.getRadian().getGamma();
+                        for (int i = 0; i < 3; i++) {
+                            dataToSend[i] = (float) Math.toDegrees(newRotation[i]);
+                        }
+                        dataToSend[9] = COMPLEMENTARY;
+                    }
+
+                    if(MainActivity.rawData.isChecked() || MainActivity.accelerometer.isChecked() || MainActivity.complementary.isChecked()) {
+                        b = FloatArray2ByteArray(dataToSend);
+                        DatagramPacket p = new DatagramPacket(b, b.length, local, port);
+                        s.send(p);
+                    }
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
-        }, 0, 10, TimeUnit.MILLISECONDS);
-
-        /*while(!isCancelled()) {
-            try {
-                byte[] b = FloatArray2ByteArray(MainActivity.values);
-                DatagramPacket p = new DatagramPacket(b, b.length, local, port);
-                s.send(p);
-                Thread.sleep(33);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }*/
+        }, 0, REFRESH_RATE, TimeUnit.MILLISECONDS);
 
         return "Executed";
     }

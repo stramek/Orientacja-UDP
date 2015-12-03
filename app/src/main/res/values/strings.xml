@@ -36,5 +36,9 @@
     
     <string name="wait_wifi">Poczekaj na połącznie z siecią.</string>
     <string name="on_and_wait_wifi">Włączam WIFI...\nPoczekaj na połącznie z siecią.</string>
+
+    <string name="algorithm_raw_data">Surowe dane</string>
+    <string name="algorithm_accelerometer">Akcelerometr</string>
+    <string name="algorithm_complementary">Filtr komplementarny</string>
 </resources>
 
