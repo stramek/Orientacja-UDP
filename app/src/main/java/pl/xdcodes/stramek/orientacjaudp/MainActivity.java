@@ -66,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public static RadioButton rawData;
     public static RadioButton accelerometer;
     public static RadioButton complementary;
+    public static RadioButton dataToAnalyze;
 
     @Override
     public void onFinishDialog(boolean status) {
@@ -93,6 +94,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         rawData = (RadioButton) findViewById(R.id.algorithm_raw_data);
         accelerometer = (RadioButton) findViewById(R.id.algorithm_accelerometer);
         complementary = (RadioButton) findViewById(R.id.algorithm_complementary);
+        dataToAnalyze = (RadioButton) findViewById(R.id.algorithm_data_to_analyze);
 
         setSupportActionBar(toolbar);
 
@@ -266,8 +268,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         if (mySensor.getType() == Sensor.TYPE_GYROSCOPE) {
             float[] gyroscope = event.values;
 
-            for (int i = 0; i < 3; i++)
-                values[i + 6] = gyroscope[i];
+                for (int i = 0; i < 3; i++)
+                    values[i + 6] = gyroscope[i];
 
             gyroscopeX.setText(round(gyroscope[0], 2));
             gyroscopeY.setText(round(gyroscope[1], 2));

@@ -29,6 +29,8 @@ public class UDP extends AsyncTask<String, Void, String> {
 
     private float[] dataToSend = new float[10];
 
+    private float[] dataToAnalyze = new float[17];
+
     public static final int REFRESH_RATE = 20;
 
     private ScheduledFuture result;
@@ -58,7 +60,7 @@ public class UDP extends AsyncTask<String, Void, String> {
             e.printStackTrace();
         }
 
-        newRotation = new double[9];
+        newRotation = new double[3];
         Arrays.fill(newRotation, 0);
 
         ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
@@ -73,6 +75,7 @@ public class UDP extends AsyncTask<String, Void, String> {
                     byte[] b;
 
                     if(MainActivity.rawData.isChecked()) {
+                        Arrays.fill(dataToSend, 0.0f);
                         dataToSend = Arrays.copyOf(MainActivity.values, 10);
                         dataToSend[9] = RAW_DATA;
                     }
@@ -97,8 +100,27 @@ public class UDP extends AsyncTask<String, Void, String> {
                         dataToSend[9] = COMPLEMENTARY;
                     }
 
+                    if(MainActivity.dataToAnalyze.isChecked()) {
+                        Arrays.fill(dataToSend, 0.0f);
+
+                        Complementary test = new Complementary(MainActivity.values, newRotation);
+
+                        for (int i = 0; i < MainActivity.values.length - 1; i++) {
+                            dataToAnalyze[i] = MainActivity.values[i];
+                        }
+                        for (int i = 0; i < test.daneDoAnalizy().getData().length; i++) {
+                            dataToAnalyze[MainActivity.values.length - 1 + i] = test.daneDoAnalizy().getData()[i];
+                        }
+                    }
+
                     if(MainActivity.rawData.isChecked() || MainActivity.accelerometer.isChecked() || MainActivity.complementary.isChecked()) {
                         b = FloatArray2ByteArray(dataToSend);
+                        DatagramPacket p = new DatagramPacket(b, b.length, local, port);
+                        s.send(p);
+                    }
+
+                    if(MainActivity.dataToAnalyze.isChecked()) {
+                        b = FloatArray2ByteArray(dataToAnalyze);
                         DatagramPacket p = new DatagramPacket(b, b.length, local, port);
                         s.send(p);
                     }
