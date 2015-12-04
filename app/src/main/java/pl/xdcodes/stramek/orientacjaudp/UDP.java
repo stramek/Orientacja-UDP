@@ -72,7 +72,6 @@ public class UDP extends AsyncTask<String, Void, String> {
                 time = System.currentTimeMillis();*/
 
                 try {
-                    byte[] b;
 
                     if(MainActivity.rawData.isChecked()) {
                         Arrays.fill(dataToSend, 0.0f);
@@ -114,14 +113,14 @@ public class UDP extends AsyncTask<String, Void, String> {
                     }
 
                     if(MainActivity.rawData.isChecked() || MainActivity.accelerometer.isChecked() || MainActivity.complementary.isChecked()) {
-                        b = FloatArray2ByteArray(dataToSend);
+                        byte[] b = FloatArray2ByteArray(dataToSend);
                         DatagramPacket p = new DatagramPacket(b, b.length, local, port);
                         s.send(p);
                     }
 
                     if(MainActivity.dataToAnalyze.isChecked()) {
-                        b = FloatArray2ByteArray(dataToAnalyze);
-                        DatagramPacket p = new DatagramPacket(b, b.length, local, port);
+                        byte[] c = FloatArray2ByteArray(dataToAnalyze);
+                        DatagramPacket p = new DatagramPacket(c, c.length, local, port);
                         s.send(p);
                     }
 
