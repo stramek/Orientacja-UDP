@@ -77,38 +77,47 @@
 
             <RadioGroup
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:theme="@style/default_text">
+                android:layout_height="wrap_content">
 
                 <RadioButton
                     android:id="@+id/algorithm_raw_data"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:checked="true"
+                    android:textColor="@color/dark_grey"
+                    android:textSize="@dimen/default_text_size"
                     android:text="@string/algorithm_raw_data"/>
 
                 <RadioButton
                     android:id="@+id/algorithm_accelerometer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/dark_grey"
+                    android:textSize="@dimen/default_text_size"
                     android:text="@string/algorithm_accelerometer"/>
 
                 <RadioButton
                     android:id="@+id/algorithm_complementary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/dark_grey"
+                    android:textSize="@dimen/default_text_size"
                     android:text="@string/algorithm_complementary"/>
 
                 <RadioButton
                     android:id="@+id/algorithm_madgwick"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/dark_grey"
+                    android:textSize="@dimen/default_text_size"
                     android:text="@string/algorithm_madgwick"/>
 
                 <RadioButton
                     android:id="@+id/algorithm_madgwick_IMU"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/dark_grey"
+                    android:textSize="@dimen/default_text_size"
                     android:text="@string/algorithm_madgwick_IMU"/>
 
             </RadioGroup>
