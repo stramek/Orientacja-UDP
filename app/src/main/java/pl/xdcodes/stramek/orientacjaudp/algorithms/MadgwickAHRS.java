@@ -1,5 +1,7 @@
 package pl.xdcodes.stramek.orientacjaudp.algorithms;
 
+import pl.xdcodes.stramek.orientacjaudp.UDP;
+
 /**
  * Created by Stramek on 05.12.2015.
  */
@@ -10,8 +12,7 @@ public class MadgwickAHRS {
 
     private float q0 = 1, q1 = 0, q2 = 0, q3 = 0;
     private float beta = 0.1f;
-    private float sampleFreq = 50f;
-
+    private final float sampleFreq = (float) (1000.0 / UDP.REFRESH_RATE);
 
     public MadgwickAHRS() {
     }
@@ -19,13 +20,9 @@ public class MadgwickAHRS {
     public float[] doMath(float[] values) {
 
         if(values != null) {
-            madgwickAHRSupdate(values[0], values[1], values[2], values[3], values[4], values[6], values[7], values[8], values[9]);
+            madgwickAHRSupdate(values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8]);
         }
-        float[] tab = new float[4];
-        tab[0] = q0;
-        tab[1] = q1;
-        tab[2] = q2;
-        tab[3] = q3;
+        float[] tab = {q0, q1, q2, q3};
         return tab;
     }
 

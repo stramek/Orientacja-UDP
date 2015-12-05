@@ -34,9 +34,11 @@ public class UDP extends AsyncTask<String, Void, String> {
 
     private float[] dataToSend = new float[10];
 
-    public static final int REFRESH_RATE = 20;
+    public static final long TIMES_FASTER = 5;
+    public static final long REFRESH_RATE = 20 / TIMES_FASTER;
 
     private ScheduledFuture result;
+    private ScheduledFuture madg;
 
     private final int RAW_DATA = 1;
     private final int ACCELEROMETER = 2;
@@ -47,6 +49,8 @@ public class UDP extends AsyncTask<String, Void, String> {
     private int lastAlgorithm = 0;
 
     private float[] madgwickResult = new float[4];
+
+    private int multiply = 0;
 
     UDP(String ip, int port) {
         this.ip = ip;
@@ -77,9 +81,9 @@ public class UDP extends AsyncTask<String, Void, String> {
             @Override
             public void run() {
 
-                //if(dataToSend[9] != lastAlgorithm)
+                if(dataToSend[9] != lastAlgorithm)
                     Arrays.fill(dataToSend, 0.0f);
-
+                lastAlgorithm = (int) dataToSend[9];
 
                 if(MainActivity.rawData.isChecked()) {
                     dataToSend = Arrays.copyOf(MainActivity.values, 10);
@@ -121,11 +125,7 @@ public class UDP extends AsyncTask<String, Void, String> {
                     dataToSend[9] = MADGWICK_IMU;
                 }
 
-                lastAlgorithm = (int) dataToSend[9];
-
-                if(MainActivity.rawData.isChecked() || MainActivity.accelerometer.isChecked() ||
-                        MainActivity.complementary.isChecked() || MainActivity.madgwick.isChecked() ||
-                        MainActivity.madgwickIMU.isChecked()) {
+                if(multiply >= TIMES_FASTER) {
                     byte[] b = FloatArray2ByteArray(dataToSend);
                     DatagramPacket p = new DatagramPacket(b, b.length, local, port);
                     try {
@@ -133,7 +133,9 @@ public class UDP extends AsyncTask<String, Void, String> {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
+                    multiply = 0;
                 }
+                multiply++;
             }
         }, 0, REFRESH_RATE, TimeUnit.MILLISECONDS);
 

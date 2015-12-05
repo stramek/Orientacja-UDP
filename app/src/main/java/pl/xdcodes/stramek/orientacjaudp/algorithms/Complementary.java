@@ -6,7 +6,7 @@ public class Complementary {
 
     private static final String TAG = "Complementary";
 
-    private final double K = 0.9;
+    private final double K = 0.98;
     private final double dt = UDP.REFRESH_RATE / 1000.0;
 
     private float[] newRotation;

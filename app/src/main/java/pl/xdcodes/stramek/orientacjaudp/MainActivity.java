@@ -115,9 +115,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         sMagnetometer = senSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
         sGyroscope = senSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
 
-        senSensorManager.registerListener(this, sAccelerometer, SensorManager.SENSOR_DELAY_GAME);
-        senSensorManager.registerListener(this, sMagnetometer, SensorManager.SENSOR_DELAY_GAME);
-        senSensorManager.registerListener(this, sGyroscope, SensorManager.SENSOR_DELAY_GAME);
+        senSensorManager.registerListener(this, sAccelerometer, SensorManager.SENSOR_DELAY_FASTEST);
+        senSensorManager.registerListener(this, sMagnetometer, SensorManager.SENSOR_DELAY_FASTEST);
+        senSensorManager.registerListener(this, sGyroscope, SensorManager.SENSOR_DELAY_FASTEST);
 
         fab = (FloatingActionButton) findViewById(R.id.fab);
 
@@ -237,9 +237,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     protected void onResume() {
         super.onResume();
-        senSensorManager.registerListener(this, sAccelerometer, SensorManager.SENSOR_DELAY_GAME);
-        senSensorManager.registerListener(this, sMagnetometer, SensorManager.SENSOR_DELAY_GAME);
-        senSensorManager.registerListener(this, sGyroscope, SensorManager.SENSOR_DELAY_GAME);
+        senSensorManager.registerListener(this, sAccelerometer, SensorManager.SENSOR_DELAY_FASTEST);
+        senSensorManager.registerListener(this, sMagnetometer, SensorManager.SENSOR_DELAY_FASTEST);
+        senSensorManager.registerListener(this, sGyroscope, SensorManager.SENSOR_DELAY_FASTEST);
     }
 
     @Override

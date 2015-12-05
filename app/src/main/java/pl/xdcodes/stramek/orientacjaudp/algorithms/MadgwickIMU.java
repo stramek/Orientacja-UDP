@@ -1,5 +1,7 @@
 package pl.xdcodes.stramek.orientacjaudp.algorithms;
 
+import pl.xdcodes.stramek.orientacjaudp.UDP;
+
 /**
  * Created by Stramek on 05.12.2015.
  */
@@ -10,7 +12,7 @@ public class MadgwickIMU {
 
     private float q0 = 1, q1 = 0, q2 = 0, q3 = 0;
     private float beta = 0.1f;
-    private float sampleFreq = 512.0f;
+    private final float sampleFreq = (float) (1000.0 / UDP.REFRESH_RATE);
 
     public MadgwickIMU() {
 
@@ -18,9 +20,7 @@ public class MadgwickIMU {
 
     public float[] doMath(float[] values) {
         if(values != null) {
-
-            madgwickAHRSupdateIMU(values[0], values[1], values[2], values[7], values[8], values[9]);
-
+            madgwickAHRSupdateIMU(values[0], values[1], values[2], values[6], values[7], values[8]);
         }
         float[] tab = {q0, q1, q2, q3};
         return tab;
