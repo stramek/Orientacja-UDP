@@ -66,7 +66,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public static RadioButton rawData;
     public static RadioButton accelerometer;
     public static RadioButton complementary;
-    public static RadioButton dataToAnalyze;
+    public static RadioButton madgwick;
+    public static RadioButton madgwickIMU;
 
     @Override
     public void onFinishDialog(boolean status) {
@@ -80,6 +81,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         } else {
             sending = false;
         }
+    }
+
+    public static float[] getValues() {
+        return values.clone();
     }
 
     @Override
@@ -96,7 +101,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         rawData = (RadioButton) findViewById(R.id.algorithm_raw_data);
         accelerometer = (RadioButton) findViewById(R.id.algorithm_accelerometer);
         complementary = (RadioButton) findViewById(R.id.algorithm_complementary);
-        dataToAnalyze = (RadioButton) findViewById(R.id.algorithm_data_to_analyze);
+        madgwick = (RadioButton) findViewById(R.id.algorithm_madgwick);
+        madgwickIMU = (RadioButton) findViewById(R.id.algorithm_madgwick_IMU);
 
         setSupportActionBar(toolbar);
 
@@ -239,11 +245,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     public void onSensorChanged(SensorEvent event) {
         Sensor mySensor = event.sensor;
-
-        /*if (event.accuracy == SensorManager.SENSOR_STATUS_UNRELIABLE) {
-            Toast.makeText(getApplicationContext(), "UNRELIABLE sensor!", Toast.LENGTH_SHORT).show();
-            return;
-        }*/
 
         if (mySensor.getType() == Sensor.TYPE_ACCELEROMETER) {
             float[] accelerometer = event.values;

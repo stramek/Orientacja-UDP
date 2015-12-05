@@ -100,10 +100,16 @@
                     android:text="@string/algorithm_complementary"/>
 
                 <RadioButton
-                    android:id="@+id/algorithm_data_to_analyze"
+                    android:id="@+id/algorithm_madgwick"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Dane do analizy"/>
+                    android:text="@string/algorithm_madgwick"/>
+
+                <RadioButton
+                    android:id="@+id/algorithm_madgwick_IMU"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/algorithm_madgwick_IMU"/>
 
             </RadioGroup>
 

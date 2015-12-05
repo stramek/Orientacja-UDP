@@ -2,6 +2,7 @@ package pl.xdcodes.stramek.orientacjaudp;
 
 import android.os.AsyncTask;
 
+import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -13,10 +14,14 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import pl.xdcodes.stramek.orientacjaudp.algorithms.Accelerometer;
+import pl.xdcodes.stramek.orientacjaudp.algorithms.Angles;
 import pl.xdcodes.stramek.orientacjaudp.algorithms.Complementary;
+import pl.xdcodes.stramek.orientacjaudp.algorithms.MadgwickAHRS;
+import pl.xdcodes.stramek.orientacjaudp.algorithms.MadgwickIMU;
 
 public class UDP extends AsyncTask<String, Void, String> {
 
+    @SuppressWarnings("Unused")
     private final String TAG = UDP.class.getName();
 
     private String ip = "";
@@ -25,11 +30,9 @@ public class UDP extends AsyncTask<String, Void, String> {
     private InetAddress local;
     private DatagramSocket s;
 
-    private double[] newRotation;
+    private double[] newRotation = new double[3];
 
     private float[] dataToSend = new float[10];
-
-    private float[] dataToAnalyze = new float[17];
 
     public static final int REFRESH_RATE = 20;
 
@@ -38,8 +41,12 @@ public class UDP extends AsyncTask<String, Void, String> {
     private final int RAW_DATA = 1;
     private final int ACCELEROMETER = 2;
     private final int COMPLEMENTARY = 3;
+    private final int MADGWICK = 4;
+    private final int MADGWICK_IMU = 5;
 
-//    private double time = 0;
+    private int lastAlgorithm = 0;
+
+    private float[] madgwickResult = new float[4];
 
     UDP(String ip, int port) {
         this.ip = ip;
@@ -60,78 +67,72 @@ public class UDP extends AsyncTask<String, Void, String> {
             e.printStackTrace();
         }
 
-        newRotation = new double[3];
-        Arrays.fill(newRotation, 0);
-
         final Accelerometer aa = new Accelerometer();
         final Complementary ca = new Complementary();
+        final MadgwickAHRS mahrs = new MadgwickAHRS();
+        final MadgwickIMU mimu = new MadgwickIMU();
 
         ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
         result =  exec.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
 
-                /*Log.d(TAG, "" + (System.currentTimeMillis() - time));
-                time = System.currentTimeMillis();*/
+                //if(dataToSend[9] != lastAlgorithm)
+                    Arrays.fill(dataToSend, 0.0f);
 
-                try {
 
-                    if(MainActivity.rawData.isChecked()) {
-                        Arrays.fill(dataToSend, 0.0f);
-                        dataToSend = Arrays.copyOf(MainActivity.values, 10);
-                        dataToSend[9] = RAW_DATA;
+                if(MainActivity.rawData.isChecked()) {
+                    dataToSend = Arrays.copyOf(MainActivity.values, 10);
+                    dataToSend[9] = RAW_DATA;
+                }
+
+                if(MainActivity.accelerometer.isChecked()) {
+                    Angles a = aa.doMath(MainActivity.getValues());
+                    dataToSend[0] = (float) Math.toDegrees(a.getAlpha());
+                    dataToSend[1] = (float) Math.toDegrees(a.getBetta());
+                    dataToSend[9] = ACCELEROMETER;
+                }
+
+                if(MainActivity.complementary.isChecked()) {
+                    Angles a = ca.doMath(MainActivity.getValues());
+                    newRotation[0] = a.getAlpha();
+                    newRotation[1] = a.getBetta();
+                    newRotation[2] = a.getGamma();
+
+                    for (int i = 0; i < 3; i++)
+                        dataToSend[i] = (float) Math.toDegrees(newRotation[i]);
+
+                    dataToSend[9] = COMPLEMENTARY;
+                }
+
+                if(MainActivity.madgwick.isChecked()) {
+                    madgwickResult = mahrs.doMath(MainActivity.getValues());
+                    for (int i = 0; i < madgwickResult.length; i++) {
+                        dataToSend[i] = madgwickResult[i];
                     }
+                    dataToSend[9] = MADGWICK;
+                }
 
-                    if(MainActivity.accelerometer.isChecked()) {
-                        Arrays.fill(dataToSend, 0.0f);
-
-                        dataToSend[0] = (float) Math.toDegrees(aa.getRadian(MainActivity.values).getAlpha());
-                        dataToSend[1] = (float) Math.toDegrees(aa.getRadian(MainActivity.values).getBetta());
-                        dataToSend[9] = ACCELEROMETER;
+                if(MainActivity.madgwickIMU.isChecked()) {
+                    madgwickResult = mimu.doMath(MainActivity.getValues());
+                    for (int i = 0; i < madgwickResult.length; i++) {
+                        dataToSend[i] = madgwickResult[i];
                     }
+                    dataToSend[9] = MADGWICK_IMU;
+                }
 
-                    if(MainActivity.complementary.isChecked()) {
-                        Arrays.fill(dataToSend, 0.0f);
+                lastAlgorithm = (int) dataToSend[9];
 
-                        newRotation[0] = ca.getRadian(MainActivity.values, newRotation).getAlpha();
-                        newRotation[1] = ca.getRadian(MainActivity.values, newRotation).getBetta();
-                        newRotation[2] = ca.getRadian(MainActivity.values, newRotation).getGamma();
-
-                        for (int i = 0; i < 3; i++) {
-                            dataToSend[i] = (float) Math.toDegrees(newRotation[i]);
-                        }
-                        dataToSend[9] = COMPLEMENTARY;
-                    }
-
-                    if(MainActivity.dataToAnalyze.isChecked()) {
-                        Arrays.fill(dataToSend, 0.0f);
-
-                        newRotation[0] = ca.getRadian(MainActivity.values, newRotation).getAlpha();
-                        newRotation[1] = ca.getRadian(MainActivity.values, newRotation).getBetta();
-                        newRotation[2] = ca.getRadian(MainActivity.values, newRotation).getGamma();
-
-                        for (int i = 0; i < MainActivity.values.length - 1; i++) {
-                            dataToAnalyze[i] = MainActivity.values[i];
-                        }
-                        for (int i = 0; i < ca.daneDoAnalizy(MainActivity.values, newRotation).getData().length; i++) {
-                            dataToAnalyze[MainActivity.values.length - 1 + i] = ca.daneDoAnalizy(MainActivity.values, newRotation).getData()[i];
-                        }
-                    }
-
-                    if(MainActivity.rawData.isChecked() || MainActivity.accelerometer.isChecked() || MainActivity.complementary.isChecked()) {
-                        byte[] b = FloatArray2ByteArray(dataToSend);
-                        DatagramPacket p = new DatagramPacket(b, b.length, local, port);
+                if(MainActivity.rawData.isChecked() || MainActivity.accelerometer.isChecked() ||
+                        MainActivity.complementary.isChecked() || MainActivity.madgwick.isChecked() ||
+                        MainActivity.madgwickIMU.isChecked()) {
+                    byte[] b = FloatArray2ByteArray(dataToSend);
+                    DatagramPacket p = new DatagramPacket(b, b.length, local, port);
+                    try {
                         s.send(p);
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-
-                    if(MainActivity.dataToAnalyze.isChecked()) {
-                        byte[] c = FloatArray2ByteArray(dataToAnalyze);
-                        DatagramPacket p = new DatagramPacket(c, c.length, local, port);
-                        s.send(p);
-                    }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
             }
         }, 0, REFRESH_RATE, TimeUnit.MILLISECONDS);

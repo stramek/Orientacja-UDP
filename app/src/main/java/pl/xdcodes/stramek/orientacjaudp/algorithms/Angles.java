@@ -1,8 +1,5 @@
 package pl.xdcodes.stramek.orientacjaudp.algorithms;
 
-/**
- * Created by Stramek on 03.12.2015.
- */
 public class Angles {
     private float angleX = 0;
     private float angleY = 0;
@@ -23,6 +20,6 @@ public class Angles {
     }
 
     public float getGamma() {
-        return  angleZ;
+        return angleZ;
     }
 }

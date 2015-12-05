@@ -5,7 +5,7 @@ public class Accelerometer {
     public Accelerometer() {
     }
 
-    public Angles getRadian(float[] values) {
+    public Angles doMath(float[] values) {
 
         float alpha = 0;
         float betta = 0;

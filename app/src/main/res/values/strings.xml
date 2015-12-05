@@ -40,5 +40,7 @@
     <string name="algorithm_raw_data">Surowe dane</string>
     <string name="algorithm_accelerometer">Akcelerometr</string>
     <string name="algorithm_complementary">Filtr komplementarny</string>
+    <string name="algorithm_madgwick">Filtr Madgwicka (A M G)</string>
+    <string name="algorithm_madgwick_IMU">Filtr Madgwicka (A G)</string>
 </resources>
 
