@@ -63,6 +63,9 @@ public class UDP extends AsyncTask<String, Void, String> {
         newRotation = new double[3];
         Arrays.fill(newRotation, 0);
 
+        final Accelerometer aa = new Accelerometer();
+        final Complementary ca = new Complementary();
+
         ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
         result =  exec.scheduleAtFixedRate(new Runnable() {
             @Override
@@ -81,18 +84,19 @@ public class UDP extends AsyncTask<String, Void, String> {
 
                     if(MainActivity.accelerometer.isChecked()) {
                         Arrays.fill(dataToSend, 0.0f);
-                        Accelerometer aa = new Accelerometer(MainActivity.values);
-                        dataToSend[0] = (float) Math.toDegrees(aa.getRadian().getAlpha());
-                        dataToSend[1] = (float) Math.toDegrees(aa.getRadian().getBetta());
+
+                        dataToSend[0] = (float) Math.toDegrees(aa.getRadian(MainActivity.values).getAlpha());
+                        dataToSend[1] = (float) Math.toDegrees(aa.getRadian(MainActivity.values).getBetta());
                         dataToSend[9] = ACCELEROMETER;
                     }
 
                     if(MainActivity.complementary.isChecked()) {
                         Arrays.fill(dataToSend, 0.0f);
-                        Complementary ca = new Complementary(MainActivity.values, newRotation);
-                        newRotation[0] = ca.getRadian().getAlpha();
-                        newRotation[1] = ca.getRadian().getBetta();
-                        newRotation[2] = ca.getRadian().getGamma();
+
+                        newRotation[0] = ca.getRadian(MainActivity.values, newRotation).getAlpha();
+                        newRotation[1] = ca.getRadian(MainActivity.values, newRotation).getBetta();
+                        newRotation[2] = ca.getRadian(MainActivity.values, newRotation).getGamma();
+
                         for (int i = 0; i < 3; i++) {
                             dataToSend[i] = (float) Math.toDegrees(newRotation[i]);
                         }
@@ -102,13 +106,15 @@ public class UDP extends AsyncTask<String, Void, String> {
                     if(MainActivity.dataToAnalyze.isChecked()) {
                         Arrays.fill(dataToSend, 0.0f);
 
-                        Complementary test = new Complementary(MainActivity.values, newRotation);
+                        newRotation[0] = ca.getRadian(MainActivity.values, newRotation).getAlpha();
+                        newRotation[1] = ca.getRadian(MainActivity.values, newRotation).getBetta();
+                        newRotation[2] = ca.getRadian(MainActivity.values, newRotation).getGamma();
 
                         for (int i = 0; i < MainActivity.values.length - 1; i++) {
                             dataToAnalyze[i] = MainActivity.values[i];
                         }
-                        for (int i = 0; i < test.daneDoAnalizy().getData().length; i++) {
-                            dataToAnalyze[MainActivity.values.length - 1 + i] = test.daneDoAnalizy().getData()[i];
+                        for (int i = 0; i < ca.daneDoAnalizy(MainActivity.values, newRotation).getData().length; i++) {
+                            dataToAnalyze[MainActivity.values.length - 1 + i] = ca.daneDoAnalizy(MainActivity.values, newRotation).getData()[i];
                         }
                     }
 

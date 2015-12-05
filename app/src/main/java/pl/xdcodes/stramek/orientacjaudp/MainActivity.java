@@ -89,8 +89,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
         algorithm = (RelativeLayout) findViewById(R.id.algorithm);
         algorithmShadow = findViewById(R.id.main_shadow_2);
+
         rawData = (RadioButton) findViewById(R.id.algorithm_raw_data);
         accelerometer = (RadioButton) findViewById(R.id.algorithm_accelerometer);
         complementary = (RadioButton) findViewById(R.id.algorithm_complementary);

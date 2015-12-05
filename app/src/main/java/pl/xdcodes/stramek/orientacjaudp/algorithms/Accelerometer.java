@@ -2,13 +2,10 @@ package pl.xdcodes.stramek.orientacjaudp.algorithms;
 
 public class Accelerometer {
 
-    private float[] values = new float[9];
-
-    public Accelerometer(float[] values) {
-        this.values = values;
+    public Accelerometer() {
     }
 
-    public Angles getRadian() {
+    public Angles getRadian(float[] values) {
 
         float alpha = 0;
         float betta = 0;

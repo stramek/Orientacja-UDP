@@ -4,18 +4,14 @@ import pl.xdcodes.stramek.orientacjaudp.UDP;
 
 public class Complementary {
 
-    private float[] values = new float[9];
-    private double[] newRotation = new double[3];
     private float[] zbierane_dane = new float[8];
     double[] gA;
 
-    public Complementary(float[] values, double[] newRotation) {
-        this.values = values;
-        this.newRotation = newRotation;
+    public Complementary() {
         gA = new double[3];
     }
 
-    public Angles getRadian() {
+    public Angles getRadian(float[] values, double[] newRotation) {
 
         final double K = 0.98;
         final double dt = UDP.REFRESH_RATE / 1000.0;
@@ -47,7 +43,7 @@ public class Complementary {
         return new Angles(alpha, betta, gamma);
     }
 
-    public TestDanych daneDoAnalizy() {
+    public TestDanych daneDoAnalizy(float[] values, double[] newRotation) {
 
         final double K = 0.98;
         final double dt = UDP.REFRESH_RATE / 1000.0;
