@@ -10,6 +10,8 @@ public class MadgwickAHRS {
     @SuppressWarnings("Unused")
     private static final String TAG = "MadgwickAHRS";
 
+    private float angle = 0;
+    private float x = 0, y = 0, z = 0;
     private float q0 = 1, q1 = 0, q2 = 0, q3 = 0;
     private float beta = 0.1f;
     private final float sampleFreq = (float) (1000.0 / UDP.REFRESH_RATE);
@@ -21,8 +23,12 @@ public class MadgwickAHRS {
 
         if(values != null) {
             madgwickAHRSupdate(values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8]);
+            angle = (float) (2.0 * Math.acos(q0));
+            x = (float) (q1 / (Math.sqrt(1 - Math.pow(q2, 2))));
+            y = (float) (q2 / (Math.sqrt(1 - Math.pow(q2, 2))));
+            z = (float) (q3 / (Math.sqrt(1 - Math.pow(q2, 2))));
         }
-        float[] tab = {q0, q1, q2, q3};
+        float[] tab = {angle, x, y, z};
         return tab;
     }
 

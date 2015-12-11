@@ -112,17 +112,17 @@ public class UDP extends AsyncTask<String, Void, String> {
                 if(MainActivity.madgwick.isChecked()) {
                     madgwickResult = mahrs.doMath(MainActivity.getValues());
                     for (int i = 0; i < madgwickResult.length; i++) {
-                        dataToSend[i] = madgwickResult[i];
+                        dataToSend[i] = (float) Math.toDegrees(madgwickResult[i]);
                     }
-                    dataToSend[9] = MADGWICK;
+                    dataToSend[9] = MADGWICK;  //4
                 }
 
                 if(MainActivity.madgwickIMU.isChecked()) {
                     madgwickResult = mimu.doMath(MainActivity.getValues());
                     for (int i = 0; i < madgwickResult.length; i++) {
-                        dataToSend[i] = madgwickResult[i];
+                        dataToSend[i] = (float) Math.toDegrees(madgwickResult[i]);
                     }
-                    dataToSend[9] = MADGWICK_IMU;
+                    dataToSend[9] = MADGWICK_IMU;  //5
                 }
 
                 if(multiply >= TIMES_FASTER) {
