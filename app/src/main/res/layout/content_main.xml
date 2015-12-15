@@ -120,6 +120,14 @@
                     android:textSize="@dimen/default_text_size"
                     android:text="@string/algorithm_madgwick_IMU"/>
 
+                <RadioButton
+                    android:id="@+id/algorithm_madgwick_IMU_kat"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/dark_grey"
+                    android:textSize="@dimen/default_text_size"
+                    android:text="@string/algorithm_madgwick_IMU_kat"/>
+
             </RadioGroup>
 
         </RelativeLayout>

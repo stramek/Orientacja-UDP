@@ -45,6 +45,7 @@ public class UDP extends AsyncTask<String, Void, String> {
     private final int COMPLEMENTARY = 3;
     private final int MADGWICK = 4;
     private final int MADGWICK_IMU = 5;
+    private final int MADGWICK_IMU_KAT = 6;
 
     private int lastAlgorithm = 0;
 
@@ -112,7 +113,7 @@ public class UDP extends AsyncTask<String, Void, String> {
                 if(MainActivity.madgwick.isChecked()) {
                     madgwickResult = mahrs.doMath(MainActivity.getValues());
                     for (int i = 0; i < madgwickResult.length; i++) {
-                        dataToSend[i] = (float) Math.toDegrees(madgwickResult[i]);
+                        dataToSend[i] = madgwickResult[i];//(float) Math.toDegrees(madgwickResult[i]);
                     }
                     dataToSend[9] = MADGWICK;  //4
                 }
@@ -120,9 +121,17 @@ public class UDP extends AsyncTask<String, Void, String> {
                 if(MainActivity.madgwickIMU.isChecked()) {
                     madgwickResult = mimu.doMath(MainActivity.getValues());
                     for (int i = 0; i < madgwickResult.length; i++) {
-                        dataToSend[i] = (float) Math.toDegrees(madgwickResult[i]);
+                        dataToSend[i] = madgwickResult[i];//(float) Math.toDegrees(madgwickResult[i]);
                     }
                     dataToSend[9] = MADGWICK_IMU;  //5
+                }
+
+                if(MainActivity.madgwickIMUKat.isChecked()) {
+                    madgwickResult = mimu.doMath(MainActivity.getValues());
+                    for (int i = 0; i < madgwickResult.length; i++) {
+                        dataToSend[i] = madgwickResult[i];//(float) Math.toDegrees(madgwickResult[i]);
+                    }
+                    dataToSend[9] = MADGWICK_IMU_KAT;  //6
                 }
 
                 if(multiply >= TIMES_FASTER) {

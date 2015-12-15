@@ -68,12 +68,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public static RadioButton complementary;
     public static RadioButton madgwick;
     public static RadioButton madgwickIMU;
+    public static RadioButton madgwickIMUKat;
 
     @Override
     public void onFinishDialog(boolean status) {
         if(status) {
             fab.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_not_interested_white_24dp));
             this.status.setText(R.string.sending);
+            accelerometer.setChecked(true);
             algorithm.setVisibility(View.VISIBLE);
             algorithmShadow.setVisibility(View.VISIBLE);
             sending = true;
@@ -103,6 +105,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         complementary = (RadioButton) findViewById(R.id.algorithm_complementary);
         madgwick = (RadioButton) findViewById(R.id.algorithm_madgwick);
         madgwickIMU = (RadioButton) findViewById(R.id.algorithm_madgwick_IMU);
+        madgwickIMUKat = (RadioButton) findViewById(R.id.algorithm_madgwick_IMU_kat);
 
         setSupportActionBar(toolbar);
 
@@ -115,9 +118,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         sMagnetometer = senSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
         sGyroscope = senSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
 
-        senSensorManager.registerListener(this, sAccelerometer, SensorManager.SENSOR_DELAY_FASTEST);
-        senSensorManager.registerListener(this, sMagnetometer, SensorManager.SENSOR_DELAY_FASTEST);
-        senSensorManager.registerListener(this, sGyroscope, SensorManager.SENSOR_DELAY_FASTEST);
+        senSensorManager.registerListener(this, sAccelerometer, SensorManager.SENSOR_DELAY_GAME);
+        senSensorManager.registerListener(this, sMagnetometer, SensorManager.SENSOR_DELAY_GAME);
+        senSensorManager.registerListener(this, sGyroscope, SensorManager.SENSOR_DELAY_GAME);
 
         fab = (FloatingActionButton) findViewById(R.id.fab);
 
@@ -237,9 +240,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     protected void onResume() {
         super.onResume();
-        senSensorManager.registerListener(this, sAccelerometer, SensorManager.SENSOR_DELAY_FASTEST);
-        senSensorManager.registerListener(this, sMagnetometer, SensorManager.SENSOR_DELAY_FASTEST);
-        senSensorManager.registerListener(this, sGyroscope, SensorManager.SENSOR_DELAY_FASTEST);
+        senSensorManager.registerListener(this, sAccelerometer, SensorManager.SENSOR_DELAY_GAME);
+        senSensorManager.registerListener(this, sMagnetometer, SensorManager.SENSOR_DELAY_GAME);
+        senSensorManager.registerListener(this, sGyroscope, SensorManager.SENSOR_DELAY_GAME);
     }
 
     @Override
