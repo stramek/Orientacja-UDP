@@ -88,7 +88,6 @@ public class ConnectDialog extends DialogFragment {
                 if (address.getText().length() > 0 && port.getText().length() > 0) {
 
                     udp = new UDP(address.getText().toString(), Integer.parseInt(port.getText().toString()));
-                    udp.execute();
 
                     SharedPreferences.Editor editor =  getContext().getSharedPreferences("lastIpPort", Context.MODE_PRIVATE).edit();
                     editor.putString("lastIp", address.getText().toString());

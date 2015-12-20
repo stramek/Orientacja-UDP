@@ -1,7 +1,5 @@
 package pl.xdcodes.stramek.orientacjaudp;
 
-import android.os.AsyncTask;
-
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -19,7 +17,7 @@ import pl.xdcodes.stramek.orientacjaudp.algorithms.Complementary;
 import pl.xdcodes.stramek.orientacjaudp.algorithms.MadgwickAHRS;
 import pl.xdcodes.stramek.orientacjaudp.algorithms.MadgwickIMU;
 
-public class UDP extends AsyncTask<String, Void, String> {
+public class UDP {
 
     @SuppressWarnings("Unused")
     private final String TAG = UDP.class.getName();
@@ -34,11 +32,10 @@ public class UDP extends AsyncTask<String, Void, String> {
 
     private float[] dataToSend = new float[10];
 
-    public static final long TIMES_FASTER = 5;
-    public static final long REFRESH_RATE = 20 / TIMES_FASTER;
+    public static final long TIMES_FASTER = 5; //5
+    public static final long REFRESH_RATE = 20 / TIMES_FASTER; //20
 
     private ScheduledFuture result;
-    private ScheduledFuture madg;
 
     private final int RAW_DATA = 1;
     private final int ACCELEROMETER = 2;
@@ -56,15 +53,10 @@ public class UDP extends AsyncTask<String, Void, String> {
     UDP(String ip, int port) {
         this.ip = ip;
         this.port = port;
+        run();
     }
 
-    public void stopUDP() {
-        result.cancel(false);
-    }
-
-    @Override
-    protected String doInBackground(String... params) {
-
+    public void run() {
         try {
             local = InetAddress.getByName(ip);
             s = new DatagramSocket();
@@ -147,8 +139,10 @@ public class UDP extends AsyncTask<String, Void, String> {
                 multiply++;
             }
         }, 0, REFRESH_RATE, TimeUnit.MILLISECONDS);
+    }
 
-        return "Executed";
+    public void stopUDP() {
+        result.cancel(false);
     }
 
     public byte[] FloatArray2ByteArray(float[] values) {
