@@ -11,11 +11,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import pl.xdcodes.stramek.orientacjaudp.algorithms.Accelerometer;
-import pl.xdcodes.stramek.orientacjaudp.algorithms.Angles;
-import pl.xdcodes.stramek.orientacjaudp.algorithms.Complementary;
-import pl.xdcodes.stramek.orientacjaudp.algorithms.MadgwickAHRS;
-import pl.xdcodes.stramek.orientacjaudp.algorithms.MadgwickIMU;
+import pl.xdcodes.stramek.orientacjaudp.algorithms.Algorithms.Algorithm;
+import pl.xdcodes.stramek.orientacjaudp.algorithms.Algorithms.AlgorithmFactory;
 
 public class UDP {
 
@@ -28,12 +25,10 @@ public class UDP {
     private InetAddress local;
     private DatagramSocket s;
 
-    private double[] newRotation = new double[3];
-
     private float[] dataToSend = new float[10];
 
-    public static final long TIMES_FASTER = 5; //5
-    public static final long REFRESH_RATE = 20 / TIMES_FASTER; //20
+    public static final long TIMES_FASTER = 1;
+    public static final long REFRESH_RATE = 20 / TIMES_FASTER;
 
     private ScheduledFuture result;
 
@@ -46,9 +41,7 @@ public class UDP {
 
     private int lastAlgorithm = 0;
 
-    private float[] madgwickResult = new float[4];
-
-    private int multiply = 0;
+    private int counter = 0;
 
     UDP(String ip, int port) {
         this.ip = ip;
@@ -64,10 +57,12 @@ public class UDP {
             e.printStackTrace();
         }
 
-        final Accelerometer aa = new Accelerometer();
-        final Complementary ca = new Complementary();
-        final MadgwickAHRS mahrs = new MadgwickAHRS();
-        final MadgwickIMU mimu = new MadgwickIMU();
+        AlgorithmFactory algorithmFactory = new AlgorithmFactory();
+
+        final Algorithm accelerometer = algorithmFactory.getAlgorithm("ACCELEROMETER");
+        final Algorithm complementary = algorithmFactory.getAlgorithm("COMPLEMENTARY");
+        final Algorithm madgwickAMG = algorithmFactory.getAlgorithm("MADGWICKAMG");
+        final Algorithm madgwickAG = algorithmFactory.getAlgorithm("MADGWICKAG");
 
         ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
         result =  exec.scheduleAtFixedRate(new Runnable() {
@@ -84,49 +79,41 @@ public class UDP {
                 }
 
                 if(MainActivity.accelerometer.isChecked()) {
-                    Angles a = aa.doMath(MainActivity.getValues());
-                    dataToSend[0] = (float) Math.toDegrees(a.getAlpha());
-                    dataToSend[1] = (float) Math.toDegrees(a.getBetta());
+                    float[] a = accelerometer.calculate(MainActivity.values);
+                    for (int i = 0; i < a.length; i++)
+                        dataToSend[i] = (float) Math.toDegrees(a[i]);
                     dataToSend[9] = ACCELEROMETER;
                 }
 
                 if(MainActivity.complementary.isChecked()) {
-                    Angles a = ca.doMath(MainActivity.getValues());
-                    newRotation[0] = a.getAlpha();
-                    newRotation[1] = a.getBetta();
-                    newRotation[2] = a.getGamma();
-
-                    for (int i = 0; i < 3; i++)
-                        dataToSend[i] = (float) Math.toDegrees(newRotation[i]);
-
+                    float[] a = complementary.calculate(MainActivity.values);
+                    for (int i = 0; i < a.length; i++)
+                        dataToSend[i] = (float) Math.toDegrees(a[i]);
                     dataToSend[9] = COMPLEMENTARY;
                 }
 
                 if(MainActivity.madgwick.isChecked()) {
-                    madgwickResult = mahrs.doMath(MainActivity.getValues());
-                    for (int i = 0; i < madgwickResult.length; i++) {
-                        dataToSend[i] = madgwickResult[i];//(float) Math.toDegrees(madgwickResult[i]);
-                    }
-                    dataToSend[9] = MADGWICK;  //4
+                    float[] a = madgwickAMG.calculate(MainActivity.getValues());
+                    for (int i = 0; i < a.length; i++)
+                        dataToSend[i] = a[i];
+                    dataToSend[9] = MADGWICK;
                 }
 
                 if(MainActivity.madgwickIMU.isChecked()) {
-                    madgwickResult = mimu.doMath(MainActivity.getValues());
-                    for (int i = 0; i < madgwickResult.length; i++) {
-                        dataToSend[i] = madgwickResult[i];//(float) Math.toDegrees(madgwickResult[i]);
-                    }
-                    dataToSend[9] = MADGWICK_IMU;  //5
+                    float[] a = madgwickAG.calculate(MainActivity.getValues());
+                    for (int i = 0; i < a.length; i++)
+                        dataToSend[i] = a[i];
+                    dataToSend[9] = MADGWICK_IMU;
                 }
 
                 if(MainActivity.madgwickIMUKat.isChecked()) {
-                    madgwickResult = mimu.doMath(MainActivity.getValues());
-                    for (int i = 0; i < madgwickResult.length; i++) {
-                        dataToSend[i] = madgwickResult[i];//(float) Math.toDegrees(madgwickResult[i]);
-                    }
-                    dataToSend[9] = MADGWICK_IMU_KAT;  //6
+                    float[] a = madgwickAG.calculate(MainActivity.getValues());
+                    for (int i = 0; i < a.length; i++)
+                        dataToSend[i] = a[i];
+                    dataToSend[9] = MADGWICK_IMU_KAT;
                 }
 
-                if(multiply >= TIMES_FASTER) {
+                if(counter >= TIMES_FASTER) {
                     byte[] b = FloatArray2ByteArray(dataToSend);
                     DatagramPacket p = new DatagramPacket(b, b.length, local, port);
                     try {
@@ -134,9 +121,10 @@ public class UDP {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    multiply = 0;
+                    counter = 0;
+
                 }
-                multiply++;
+                counter++;
             }
         }, 0, REFRESH_RATE, TimeUnit.MILLISECONDS);
     }

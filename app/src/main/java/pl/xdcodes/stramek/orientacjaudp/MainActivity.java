@@ -30,6 +30,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     private final String TAG = MainActivity.class.getName();
 
+    private long lastUpdate = 0;
+
     private SensorManager senSensorManager;
 
     private Sensor sAccelerometer;
@@ -73,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     public void onFinishDialog(boolean status) {
         if(status) {
-            fab.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_not_interested_white_24dp));
+            fab.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_sync_disabled_white_24dp));
             this.status.setText(R.string.sending);
             accelerometer.setChecked(true);
             algorithm.setVisibility(View.VISIBLE);
@@ -154,7 +156,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     stopSending();
                     preventFromSleep(false);
                     sending = false;
-                    fab.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_settings_ethernet_white_24dp));
+                    fab.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_sync_white_24dp));
                 }
             }
         });
@@ -232,7 +234,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             stopSending();
             preventFromSleep(false);
             sending = false;
-            fab.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_settings_ethernet_white_24dp));
+            fab.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_sync_white_24dp));
             senSensorManager.unregisterListener(this);
         }
     }
@@ -251,35 +253,34 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         if (mySensor.getType() == Sensor.TYPE_ACCELEROMETER) {
             float[] accelerometer = event.values;
-
             for (int i = 0; i < 3; i++)
                 values[i] = accelerometer[i];
-
-            accelerometerX.setText(round(accelerometer[0], 2));
-            accelerometerY.setText(round(accelerometer[1], 2));
-            accelerometerZ.setText(round(accelerometer[2], 2));
         }
 
         if (mySensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
             float[] magnetometer = event.values;
-
             for (int i = 0; i < 3; i++)
                 values[i + 3] = magnetometer[i];
-
-            magnetometerX.setText(round(magnetometer[0], 2));
-            magnetometerY.setText(round(magnetometer[1], 2));
-            magnetometerZ.setText(round(magnetometer[2], 2));
         }
 
         if (mySensor.getType() == Sensor.TYPE_GYROSCOPE) {
             float[] gyroscope = event.values;
-
                 for (int i = 0; i < 3; i++)
                     values[i + 6] = gyroscope[i];
+        }
 
-            gyroscopeX.setText(round(gyroscope[0], 2));
-            gyroscopeY.setText(round(gyroscope[1], 2));
-            gyroscopeZ.setText(round(gyroscope[2], 2));
+        long curTime = System.currentTimeMillis();
+        if ((curTime - lastUpdate) > 100) {
+            accelerometerX.setText(round(values[0], 2));
+            accelerometerY.setText(round(values[1], 2));
+            accelerometerZ.setText(round(values[2], 2));
+            magnetometerX.setText(round(values[3], 2));
+            magnetometerY.setText(round(values[4], 2));
+            magnetometerZ.setText(round(values[5], 2));
+            gyroscopeX.setText(round(values[6], 2));
+            gyroscopeY.setText(round(values[7], 2));
+            gyroscopeZ.setText(round(values[8], 2));
+            lastUpdate = curTime;
         }
     }
 

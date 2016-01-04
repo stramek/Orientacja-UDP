@@ -1,32 +1,28 @@
-package pl.xdcodes.stramek.orientacjaudp.algorithms;
+package pl.xdcodes.stramek.orientacjaudp.algorithms.Algorithms;
 
 import pl.xdcodes.stramek.orientacjaudp.UDP;
 
 /**
  * Created by Stramek on 05.12.2015.
  */
-public class MadgwickIMU {
+public class MadgwickAG implements Algorithm {
 
     @SuppressWarnings("Unused")
-    private static final String TAG = "MadgwickIMU";
+    private static final String TAG = "MadgwickAG";
 
     private float q0 = 1, q1 = 0, q2 = 0, q3 = 0;
     private float beta = 0.1f;
     private final float sampleFreq = (float) (1000.0 / UDP.REFRESH_RATE);
 
-    public MadgwickIMU() {
-
-    }
-
-    public float[] doMath(float[] values) {
-        if(values != null) {
-            madgwickAHRSupdateIMU(values[0], values[1], values[2], values[6], values[7], values[8]);
-        }
+    @Override
+    public float[] calculate(float[] values) {
+        if(values != null)
+            madgwickAGupdateIMU(values[0], values[1], values[2], values[6], values[7], values[8]);
         float[] tab = {q0, q1, q2, q3};
         return tab;
     }
 
-    void madgwickAHRSupdateIMU(float ax, float ay, float az, float gx, float gy, float gz) {
+    void madgwickAGupdateIMU(float ax, float ay, float az, float gx, float gy, float gz) {
         float recipNorm;
         float s0, s1, s2, s3;
         float qDot1, qDot2, qDot3, qDot4;

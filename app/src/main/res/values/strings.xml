@@ -7,7 +7,7 @@
     <string name="connecting">łączenie&#8230;</string>
     <string name="sending">wysyłanie&#8230;</string>
 
-    <string name="placeholder">(&#8230;)</string>
+    <string name="placeholder">Brak czujnika</string>
 
     <string name="magnetometer">Magnetometr:</string>
     <string name="accelerometer">Akcelerometr:</string>
@@ -30,7 +30,7 @@
     <string name="blank_address">Podaj adres</string>
     <string name="blank_port">Podaj port</string>
 
-    <string name="author_description">Autor: Marcin Stramowski\n\nProjekt inżynierski\n\n
+    <string name="author_description">Autor: Marcin Stramowski\n\nPraca inżynierska\n\n
         Temat: Sterowanie on-line obiektem wirtualnym w przestrzeni 3D z wykorzystaniem
         sygnałów urządzenia mobilnego</string>
     

@@ -1,12 +1,9 @@
-package pl.xdcodes.stramek.orientacjaudp.algorithms;
+package pl.xdcodes.stramek.orientacjaudp.algorithms.Algorithms;
 
-public class Accelerometer {
+public class Accelerometer implements Algorithm {
 
-    public Accelerometer() {
-    }
-
-    public Angles doMath(float[] values) {
-
+    @Override
+    public float[] calculate(float[] values) {
         float alpha = 0;
         float betta = 0;
         float gamma = 0;
@@ -17,6 +14,8 @@ public class Accelerometer {
             betta = (float)Math.atan2(values[1], values[2]);
         }
 
-        return new Angles(-betta, alpha, gamma);
+        float[] ret = {-betta, alpha, gamma};
+
+        return ret;
     }
 }

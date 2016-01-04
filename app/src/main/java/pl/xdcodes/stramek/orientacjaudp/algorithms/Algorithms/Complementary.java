@@ -1,8 +1,8 @@
-package pl.xdcodes.stramek.orientacjaudp.algorithms;
+package pl.xdcodes.stramek.orientacjaudp.algorithms.Algorithms;
 
 import pl.xdcodes.stramek.orientacjaudp.UDP;
 
-public class Complementary {
+public class Complementary implements Algorithm {
 
     private static final String TAG = "Complementary";
 
@@ -17,8 +17,8 @@ public class Complementary {
         newRotation = new float[3];
     }
 
-    public Angles doMath(float[] values) {
-
+    @Override
+    public float[] calculate(float[] values) {
         if(values != null) {
             double s1 = Math.sin(newRotation[0]);
             double s2 = Math.sin(newRotation[1]);
@@ -36,7 +36,7 @@ public class Complementary {
             newRotation[2] = (float) ((K * (newRotation[2] + (gA[2] * dt))) + ((1 - K) * magnGamma));
         }
 
-        return new Angles(newRotation[0], newRotation[1], newRotation[2]);
+        float[] ret = {newRotation[0], newRotation[1], newRotation[2]};
+        return ret;
     }
-
 }

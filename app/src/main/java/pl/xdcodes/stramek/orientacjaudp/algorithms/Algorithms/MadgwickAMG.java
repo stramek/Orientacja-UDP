@@ -1,32 +1,20 @@
-package pl.xdcodes.stramek.orientacjaudp.algorithms;
+package pl.xdcodes.stramek.orientacjaudp.algorithms.Algorithms;
 
 import pl.xdcodes.stramek.orientacjaudp.UDP;
 
 /**
  * Created by Stramek on 05.12.2015.
  */
-public class MadgwickAHRS {
+public class MadgwickAMG implements Algorithm {
 
     @SuppressWarnings("Unused")
-    private static final String TAG = "MadgwickAHRS";
+    private static final String TAG = "MadgwickAMG";
 
     private float q0 = 1, q1 = 0, q2 = 0, q3 = 0;
     private float beta = 0.1f;
     private final float sampleFreq = (float) (1000.0 / UDP.REFRESH_RATE);
 
-    public MadgwickAHRS() {
-    }
-
-    public float[] doMath(float[] values) {
-
-        if(values != null) {
-            madgwickAHRSupdate(values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8]);
-        }
-        float[] tab = {q0, q1, q2, q3};
-        return tab;
-    }
-
-    void madgwickAHRSupdate(float ax, float ay, float az, float mx, float my, float mz, float gx, float gy, float gz) {
+    void madgwickAMGupdate(float ax, float ay, float az, float mx, float my, float mz, float gx, float gy, float gz) {
         float recipNorm;
         float s0, s1, s2, s3;
         float qDot1, qDot2, qDot3, qDot4;
@@ -196,5 +184,13 @@ public class MadgwickAHRS {
     private float invSqrt(float x) {
         double y = 1 / (Math.sqrt(x));
         return (float) y;
+    }
+
+    @Override
+    public float[] calculate(float[] values) {
+        if(values != null)
+            madgwickAMGupdate(values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8]);
+        float[] ret = {q0, q1, q2, q3};
+        return ret;
     }
 }
