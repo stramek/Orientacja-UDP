@@ -301,7 +301,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     private String round(float value, int digits) {
         float pom = 1;
-        assert digits >= 1;
         for (int i = 0; i < digits; i++) pom *= 10;
         return String.valueOf((Math.round(value * pom)) / pom);
     }
