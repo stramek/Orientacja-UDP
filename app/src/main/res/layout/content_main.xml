@@ -40,6 +40,7 @@
                 android:layout_alignParentTop="true"
                 android:gravity="center_horizontal"
                 android:text="@string/status"
+                android:paddingBottom="@dimen/sensor_text_bottom_padding"
                 android:theme="@style/default_text"/>
 
             <TextView
@@ -65,6 +66,58 @@
             android:layout_marginBottom="@dimen/view_padding"/>
 
         <RelativeLayout
+            android:id="@+id/device"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/inner_padding_Top"
+            android:paddingBottom="@dimen/inner_padding_Bottom"
+            android:paddingLeft="@dimen/inner_padding_Left"
+            android:paddingRight="@dimen/inner_padding_Right"
+            android:visibility="gone"
+            android:background="@color/main_inner">
+
+            <TextView
+                android:id="@+id/calculations_tv"
+                android:paddingBottom="@dimen/sensor_text_bottom_padding"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/calculations_tv"
+                android:theme="@style/default_text"/>
+
+            <RadioGroup
+                android:layout_below="@id/calculations_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation='horizontal'>
+
+                <RadioButton
+                    android:id="@+id/smartphone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/dark_grey"
+                    android:textSize="@dimen/default_text_size"
+                    android:text="@string/calculations_smartphone"/>
+
+                <RadioButton
+                    android:id="@+id/computer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/dark_grey"
+                    android:textSize="@dimen/default_text_size"
+                    android:text="@string/calculations_computer"/>
+
+            </RadioGroup>
+        </RelativeLayout>
+
+        <View
+            android:id="@+id/main_shadow_2"
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/shadow_height"
+            android:background="@color/main_shadow"
+            android:visibility="gone"
+            android:layout_marginBottom="@dimen/view_padding"/>
+
+        <RelativeLayout
             android:id="@+id/algorithm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -75,71 +128,78 @@
             android:visibility="gone"
             android:background="@color/main_inner">
 
-            <RadioGroup
+        <TextView
+            android:id="@+id/algorithm_tv"
+            android:paddingTop="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/algorithm_tv"
+            android:theme="@style/default_text"/>
+
+        <RadioGroup
+            android:layout_below="@id/algorithm_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RadioButton
+                android:id="@+id/algorithm_raw_data"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:textColor="@color/dark_grey"
+                android:textSize="@dimen/default_text_size"
+                android:text="@string/algorithm_raw_data"/>
 
-                <RadioButton
-                    android:id="@+id/algorithm_raw_data"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:checked="true"
-                    android:textColor="@color/dark_grey"
-                    android:textSize="@dimen/default_text_size"
-                    android:text="@string/algorithm_raw_data"/>
+            <RadioButton
+                android:id="@+id/algorithm_accelerometer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/dark_grey"
+                android:textSize="@dimen/default_text_size"
+                android:text="@string/algorithm_accelerometer"/>
 
-                <RadioButton
-                    android:id="@+id/algorithm_accelerometer"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/dark_grey"
-                    android:textSize="@dimen/default_text_size"
-                    android:text="@string/algorithm_accelerometer"/>
+            <RadioButton
+                android:id="@+id/algorithm_complementary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/dark_grey"
+                android:textSize="@dimen/default_text_size"
+                android:text="@string/algorithm_complementary"/>
 
-                <RadioButton
-                    android:id="@+id/algorithm_complementary"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/dark_grey"
-                    android:textSize="@dimen/default_text_size"
-                    android:text="@string/algorithm_complementary"/>
+            <RadioButton
+                android:id="@+id/algorithm_madgwick"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/dark_grey"
+                android:textSize="@dimen/default_text_size"
+                android:text="@string/algorithm_madgwick"/>
 
-                <RadioButton
-                    android:id="@+id/algorithm_madgwick"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/dark_grey"
-                    android:textSize="@dimen/default_text_size"
-                    android:text="@string/algorithm_madgwick"/>
+            <RadioButton
+                android:id="@+id/algorithm_madgwick_IMU"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/dark_grey"
+                android:textSize="@dimen/default_text_size"
+                android:text="@string/algorithm_madgwick_IMU"/>
 
-                <RadioButton
-                    android:id="@+id/algorithm_madgwick_IMU"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/dark_grey"
-                    android:textSize="@dimen/default_text_size"
-                    android:text="@string/algorithm_madgwick_IMU"/>
+            <RadioButton
+                android:id="@+id/algorithm_madgwick_IMU_kat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/dark_grey"
+                android:textSize="@dimen/default_text_size"
+                android:text="@string/algorithm_madgwick_IMU_kat"/>
 
-                <RadioButton
-                    android:id="@+id/algorithm_madgwick_IMU_kat"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/dark_grey"
-                    android:textSize="@dimen/default_text_size"
-                    android:text="@string/algorithm_madgwick_IMU_kat"/>
+        </RadioGroup>
 
-            </RadioGroup>
+    </RelativeLayout>
 
-        </RelativeLayout>
-
-        <View
-            android:id="@+id/main_shadow_2"
-            android:visibility="gone"
-            android:layout_width="fill_parent"
-            android:layout_height="@dimen/shadow_height"
-            android:layout_below="@+id/algorithm"
-            android:background="@color/main_shadow"
-            android:layout_marginBottom="@dimen/view_padding"/>
+    <View
+        android:id="@+id/main_shadow_3"
+        android:visibility="gone"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/shadow_height"
+        android:background="@color/main_shadow"
+        android:layout_marginBottom="@dimen/view_padding"/>
 
     <RelativeLayout
         android:id="@+id/accelerometer_view"
@@ -230,7 +290,7 @@
     </RelativeLayout>
 
     <View
-        android:id="@+id/main_shadow_3"
+        android:id="@+id/main_shadow_4"
         android:layout_width="fill_parent"
         android:layout_height="@dimen/shadow_height"
         android:layout_below="@+id/accelerometer_view"
@@ -326,7 +386,7 @@
     </RelativeLayout>
 
     <View
-        android:id="@+id/main_shadow_4"
+        android:id="@+id/main_shadow_5"
         android:layout_width="fill_parent"
         android:layout_height="@dimen/shadow_height"
         android:layout_below="@+id/accelerometer_view"
@@ -422,7 +482,7 @@
     </RelativeLayout>
 
             <View
-                android:id="@+id/main_shadow_5"
+                android:id="@+id/main_shadow_6"
                 android:layout_width="fill_parent"
                 android:layout_height="@dimen/shadow_height"
                 android:layout_below="@+id/gyroscope_view"

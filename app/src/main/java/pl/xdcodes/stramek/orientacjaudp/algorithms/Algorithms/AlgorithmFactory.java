@@ -10,9 +10,7 @@ public class AlgorithmFactory {
             return null;
         }
 
-        if(algorithm.equalsIgnoreCase("ACCELEROMETER")) {
-            return new Accelerometer();
-        } else if (algorithm.equalsIgnoreCase("COMPLEMENTARY")) {
+        if (algorithm.equalsIgnoreCase("COMPLEMENTARY")) {
             return new Complementary();
         } else if (algorithm.equalsIgnoreCase("MADGWICKAMG")) {
             return new MadgwickAMG();

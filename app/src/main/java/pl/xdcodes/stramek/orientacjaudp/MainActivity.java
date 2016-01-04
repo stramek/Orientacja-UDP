@@ -63,7 +63,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private PowerManager.WakeLock mWakeLock;
 
     private RelativeLayout algorithm;
+    private RelativeLayout device;
     private View algorithmShadow;
+    private View deviceShadow;
+
+    public static RadioButton smartphone;
+    public static RadioButton computer;
 
     public static RadioButton rawData;
     public static RadioButton accelerometer;
@@ -77,9 +82,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         if(status) {
             fab.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_sync_disabled_white_24dp));
             this.status.setText(R.string.sending);
-            accelerometer.setChecked(true);
+            rawData.setChecked(true);
+            computer.setChecked(true);
             algorithm.setVisibility(View.VISIBLE);
+            device.setVisibility(View.VISIBLE);
             algorithmShadow.setVisibility(View.VISIBLE);
+            deviceShadow.setVisibility(View.VISIBLE);
             sending = true;
             preventFromSleep(true);
         } else {
@@ -100,7 +108,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         algorithm = (RelativeLayout) findViewById(R.id.algorithm);
+        device = (RelativeLayout) findViewById(R.id.device);
         algorithmShadow = findViewById(R.id.main_shadow_2);
+        deviceShadow = findViewById(R.id.main_shadow_3);
+
+        smartphone = (RadioButton) findViewById(R.id.smartphone);
+        computer = (RadioButton) findViewById(R.id.computer);
 
         rawData = (RadioButton) findViewById(R.id.algorithm_raw_data);
         accelerometer = (RadioButton) findViewById(R.id.algorithm_accelerometer);
@@ -205,7 +218,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         dialog.cancelSending();
         status.setText(getString(R.string.disconnected));
         algorithm.setVisibility(View.GONE);
+        device.setVisibility(View.GONE);
         algorithmShadow.setVisibility(View.GONE);
+        deviceShadow.setVisibility(View.GONE);
     }
 
     @Override
