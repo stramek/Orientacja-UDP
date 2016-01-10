@@ -42,7 +42,7 @@
     <string name="algorithm_complementary">Filtr komplementarny</string>
     <string name="algorithm_madgwick">Filtr Madgwicka (A M G)</string>
     <string name="algorithm_madgwick_IMU">Filtr Madgwicka (A G)</string>
-    <string name="algorithm_madgwick_IMU_kat">Filtr Madgwicka (A G) (Kąt)</string>
+    <string name="algorithm_motor_angle">Liczenie kąta</string>
     <string name="calculations_tv">Urządzenie liczące:</string>
     <string name="calculations_smartphone">Smartfon</string>
     <string name="calculations_computer">Komputer</string>
