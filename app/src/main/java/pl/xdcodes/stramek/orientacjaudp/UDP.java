@@ -27,8 +27,8 @@ public class UDP {
 
     private float[] dataToSend = new float[10];
 
-    public static final long TIMES_FASTER = 2;
-    public static final long REFRESH_RATE = 20 / TIMES_FASTER;
+    public static final long CALCULATE_SPEED_RATIO = 2;
+    public static final long REFRESH_RATE = 20 / CALCULATE_SPEED_RATIO;
 
     private ScheduledFuture result;
 
@@ -37,12 +37,12 @@ public class UDP {
     private final int COMPLEMENTARY = 3;
     private final int MADGWICK_AMG = 4;
     private final int MADGWICK_AG = 5;
-    private final int MADGWICK_AG_ANGLE = 6;
+    private final int MOTOR_ANGLE = 6;
 
     private final int COMPLEMENTARY_COMPUTER = 13;
     private final int MADGWICK_AMG_COMPUTER = 14;
     private final int MADGWICK_AG_COMPUTER = 15;
-    private final int MADGWICK_AG_ANGLE_COMPUTER = 16;
+    private final int MOTOR_ANGLE_COMPUTER = 16;
 
     private int lastAlgorithm = 0;
 
@@ -67,6 +67,7 @@ public class UDP {
         final Algorithm complementary = algorithmFactory.getAlgorithm("COMPLEMENTARY");
         final Algorithm madgwickAMG = algorithmFactory.getAlgorithm("MADGWICKAMG");
         final Algorithm madgwickAG = algorithmFactory.getAlgorithm("MADGWICKAG");
+        final Algorithm motorAngle = algorithmFactory.getAlgorithm("MOTORANGLE");
 
         ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
         result =  exec.scheduleAtFixedRate(new Runnable() {
@@ -127,17 +128,17 @@ public class UDP {
 
                 if(MainActivity.madgwickIMUKat.isChecked()) {
                     if(MainActivity.smartphone.isChecked()) {
-                        float[] a = madgwickAG.calculate(MainActivity.getValues());
+                        float[] a = motorAngle.calculate(MainActivity.getValues());
                         for (int i = 0; i < a.length; i++)
-                            dataToSend[i] = a[i];
-                        dataToSend[9] = MADGWICK_AG_ANGLE;
+                            dataToSend[i] = (float) Math.toDegrees(a[i]);
+                        dataToSend[9] = MOTOR_ANGLE;
                     } else if(MainActivity.computer.isChecked()) {
                         dataToSend = Arrays.copyOf(MainActivity.values, 10);
-                        dataToSend[9] = MADGWICK_AG_ANGLE_COMPUTER;
+                        dataToSend[9] = MOTOR_ANGLE_COMPUTER;
                     }
                 }
 
-                if(counter >= TIMES_FASTER) {
+                if(counter >= CALCULATE_SPEED_RATIO) {
                     byte[] b = FloatArray2ByteArray(dataToSend);
                     DatagramPacket p = new DatagramPacket(b, b.length, local, port);
                     try {

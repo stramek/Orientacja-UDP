@@ -84,10 +84,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             this.status.setText(R.string.sending);
             rawData.setChecked(true);
             computer.setChecked(true);
-            algorithm.setVisibility(View.VISIBLE);
-            device.setVisibility(View.VISIBLE);
-            algorithmShadow.setVisibility(View.VISIBLE);
-            deviceShadow.setVisibility(View.VISIBLE);
+            showSendingOptions();
             sending = true;
             preventFromSleep(true);
         } else {
@@ -107,8 +104,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
-        algorithm = (RelativeLayout) findViewById(R.id.algorithm);
-        device = (RelativeLayout) findViewById(R.id.device);
+        algorithm = (RelativeLayout) findViewById(R.id.algorithm_view);
+        device = (RelativeLayout) findViewById(R.id.device_view);
         algorithmShadow = findViewById(R.id.main_shadow_2);
         deviceShadow = findViewById(R.id.main_shadow_3);
 
@@ -125,7 +122,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         setSupportActionBar(toolbar);
 
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        mWakeLock = pm.newWakeLock (PowerManager.SCREEN_DIM_WAKE_LOCK, "My Tag");
+        mWakeLock = pm.newWakeLock (PowerManager.SCREEN_DIM_WAKE_LOCK, "sending");
 
         senSensorManager = (SensorManager) getSystemService(getApplicationContext().SENSOR_SERVICE);
 
@@ -175,6 +172,20 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         });
     }
 
+    private void showSendingOptions() {
+        algorithm.setVisibility(View.VISIBLE);
+        device.setVisibility(View.VISIBLE);
+        algorithmShadow.setVisibility(View.VISIBLE);
+        deviceShadow.setVisibility(View.VISIBLE);
+    }
+
+    private void hideSendingOptions() {
+        algorithm.setVisibility(View.GONE);
+        device.setVisibility(View.GONE);
+        algorithmShadow.setVisibility(View.GONE);
+        deviceShadow.setVisibility(View.GONE);
+    }
+
     private boolean isWifiConnected() {
         ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
@@ -217,10 +228,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private void stopSending() {
         dialog.cancelSending();
         status.setText(getString(R.string.disconnected));
-        algorithm.setVisibility(View.GONE);
-        device.setVisibility(View.GONE);
-        algorithmShadow.setVisibility(View.GONE);
-        deviceShadow.setVisibility(View.GONE);
+        hideSendingOptions();
     }
 
     @Override
@@ -250,8 +258,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             preventFromSleep(false);
             sending = false;
             fab.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_sync_white_24dp));
-            senSensorManager.unregisterListener(this);
         }
+        senSensorManager.unregisterListener(this);
     }
 
     @Override
@@ -268,43 +276,45 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         if (mySensor.getType() == Sensor.TYPE_ACCELEROMETER) {
             float[] accelerometer = event.values;
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < accelerometer.length; i++)
                 values[i] = accelerometer[i];
         }
 
         if (mySensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
             float[] magnetometer = event.values;
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < magnetometer.length; i++)
                 values[i + 3] = magnetometer[i];
         }
 
         if (mySensor.getType() == Sensor.TYPE_GYROSCOPE) {
             float[] gyroscope = event.values;
-                for (int i = 0; i < 3; i++)
-                    values[i + 6] = gyroscope[i];
+            for (int i = 0; i < gyroscope.length; i++)
+                values[i + 6] = gyroscope[i];
         }
 
         long curTime = System.currentTimeMillis();
         if ((curTime - lastUpdate) > 100) {
-            accelerometerX.setText(round(values[0], 2));
-            accelerometerY.setText(round(values[1], 2));
-            accelerometerZ.setText(round(values[2], 2));
-            magnetometerX.setText(round(values[3], 2));
-            magnetometerY.setText(round(values[4], 2));
-            magnetometerZ.setText(round(values[5], 2));
-            gyroscopeX.setText(round(values[6], 2));
-            gyroscopeY.setText(round(values[7], 2));
-            gyroscopeZ.setText(round(values[8], 2));
+            accelerometerX.setText(round(values[0]));
+            accelerometerY.setText(round(values[1]));
+            accelerometerZ.setText(round(values[2]));
+            magnetometerX.setText(round(values[3]));
+            magnetometerY.setText(round(values[4]));
+            magnetometerZ.setText(round(values[5]));
+            gyroscopeX.setText(round(values[6]));
+            gyroscopeY.setText(round(values[7]));
+            gyroscopeZ.setText(round(values[8]));
             lastUpdate = curTime;
         }
     }
 
-    private String round(float value, int digits) {
-        float pom = 1;
-        for (int i = 0; i < digits; i++) pom *= 10;
-        return String.valueOf((Math.round(value * pom)) / pom);
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
     }
 
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {}
+
+    private String round(float value) {
+        return String.valueOf((Math.round(value * 100f)) / 100f);
+    }
+
 }
