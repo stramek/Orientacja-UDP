@@ -52,7 +52,7 @@ public class MotorAngle implements Algorithm {
         if(beta < -Math.PI)
             beta = (float) (beta + 2 * Math.PI);
 
-        float[] ret = {beta};
+        float[] ret = {-beta};
         return ret;
     }
 }
